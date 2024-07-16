@@ -1,0 +1,124 @@
+@font-face {
+  font-family: 'LuckiestGuy';
+  font-weight: 400;
+  src: url('fonts/LuckiestGuy.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  src: url('../assets/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 500;
+  src: url('../assets/fonts/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 700;
+  src: url('../assets/fonts/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'yanone_kaffeesatzregular';
+  src: url('../assets/fonts/yanonekaffeesatz-regular-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'TradeWinds';
+  src: url('../assets/fonts/Trade-Winds.woff2') format('woff2');
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  color: #222 !important;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: rgb(220, 161, 94);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #282828;
+}
+
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: rgb(220, 161, 94);
+}
+
+body {
+  margin-top: 80px !important;
+  background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  body {
+    margin-top: 50px !important;
+  }
+  .bg {
+    min-height: calc(100vh - 50px) !important;
+  }
+}
+
+.btn {
+  font-family: 'LuckiestGuy', cursive;
+}
+
+.btn-warning {
+  background: url('images/layout/pattern-1.png') top center repeat !important;
+  background-color: #f0ad4e !important;
+  border-color: #eea236 !important;
+  color: #eaea00 !important;
+  text-shadow:
+    -1px 0 black,
+    0 1px black,
+    1px 0 black,
+    0 -1px black !important;
+}
+
+.btn-warning:hover {
+  background-color: #ec971f !important;
+  border-color: #d58512 !important;
+}
+
+.bg {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wrapper {
+  background: url('images/bg/bg-01.jpg') top center no-repeat #1eb5f0;
+  background-size: cover;
+  background-attachment: fixed;
+  flex: 1;
+}
+
+.wrapper-container {
+  background-image: url('../assets/images/layout/top.png'),
+    url('../assets/images/layout/bottom.png'), url('../assets/images/layout/middle.jpg');
+  background-position:
+    center top,
+    center bottom,
+    center top;
+  background-repeat: no-repeat, no-repeat, repeat-y;
+  background-size: 100%, 100%, 100%;
+  border-radius: 5px;
+  border: 3px solid #c07617;
+  padding: 1rem;
+  margin-bottom: 1rem !important;
+}
