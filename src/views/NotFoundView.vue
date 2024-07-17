@@ -4,7 +4,7 @@ import PageTemplate from '@/templates/PageTemplate.vue';
 </script>
 
 <template>
-  <PageTemplate>
+  <PageTemplate type="off">
     <template #wrapper-container>
       <TitleComponent title="Pacifistas encontraram um erro!" />
       <img src="../assets/images/layout/error.jpg" alt="Error image" class="is-flex mx-auto" />

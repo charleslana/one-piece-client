@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import FooterComponent from '@/components/FooterComponent.vue';
 import NavBarComponent from '@/components/NavBarComponent.vue';
+
+defineProps<{
+  type: 'on' | 'off';
+}>();
 </script>
 
 <template>

@@ -6,7 +6,7 @@ import PageTemplate from '@/templates/PageTemplate.vue';
 </script>
 
 <template>
-  <PageTemplate>
+  <PageTemplate type="off">
     <template #wrapper-container>
       <div class="columns">
         <div class="column is-6">
