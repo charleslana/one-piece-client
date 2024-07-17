@@ -3,6 +3,26 @@ import BoxComponent from '@/components/BoxComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import PageTemplate from '@/templates/PageTemplate.vue';
+import { ref } from 'vue';
+import images from '@/data/image';
+
+interface Banner {
+  image: string;
+  message: string;
+}
+
+const banners = ref<Banner[]>([
+  {
+    image: images.imageBanner1,
+    message:
+      'Você vai interagir com os personagens mais conhecidos do mundo One Piece, até aprender com eles.'
+  },
+  {
+    image: images.imageBanner1,
+    message:
+      'Você vai interagir com os personagens mais conhecidos do mundo One Piece, até aprender com eles 2.'
+  }
+]);
 </script>
 
 <template>
@@ -17,12 +37,10 @@ import PageTemplate from '@/templates/PageTemplate.vue';
             :wrap-around="true"
             pause-autoplay-on-hover
           >
-            <Slide v-for="slide in 10" :key="slide">
+            <Slide v-for="(slide, index) in banners" :key="index">
               <div>
-                <img src="../assets/images/home/1.png" alt="Screenshot image" />
-                <BoxComponent
-                  message="Você vai interagir com os personagens mais conhecidos do mundo One Piece, até aprender com eles."
-                />
+                <img :src="slide.image" alt="Screenshot image" />
+                <BoxComponent :message="slide.message" />
               </div>
             </Slide>
             <template #addons>

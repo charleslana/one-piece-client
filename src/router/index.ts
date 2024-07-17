@@ -1,4 +1,7 @@
 import HomeView from '@/views/HomeView.vue';
+import LoginView from '@/views/LoginView.vue';
+import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -9,6 +12,24 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: { title: getTitle('Início') }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      meta: { title: getTitle('Cadastro') }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { title: getTitle('Login') }
+    },
+    {
+      path: '/recovery-password',
+      name: 'recovery-password',
+      component: RecoveryPasswordView,
+      meta: { title: getTitle('Login') }
     },
     {
       path: '/:catchAll(.*)',

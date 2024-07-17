@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 const props = defineProps<{
-  type: 'on' | 'off';
+  type: 'on' | 'off' | 'none';
 }>();
 
 interface Menu {
@@ -20,6 +20,9 @@ const menuOn = ref<Menu[]>([]);
 const menuList = ref<Menu[]>([]);
 
 onMounted(() => {
+  if (props.type === 'none') {
+    return;
+  }
   if (props.type === 'on') {
     menuList.value = menuOn.value;
     return;

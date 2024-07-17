@@ -3,13 +3,13 @@ import FooterComponent from '@/components/FooterComponent.vue';
 import NavBarComponent from '@/components/NavBarComponent.vue';
 
 defineProps<{
-  type: 'on' | 'off';
+  type: 'on' | 'off' | 'none';
 }>();
 </script>
 
 <template>
   <div class="theme-light bg">
-    <NavBarComponent type="off" />
+    <NavBarComponent :type="type" />
     <div class="wrapper">
       <div class="columns is-gapless">
         <div class="column is-one-fifth custom-menu is-hidden-mobile"></div>

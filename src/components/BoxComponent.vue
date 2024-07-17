@@ -1,11 +1,14 @@
 <script setup lang="ts">
 defineProps<{
   message: string;
+  isCenter?: boolean;
 }>();
 </script>
 
 <template>
-  <div class="box">{{ message }}</div>
+  <div :class="['box', { 'has-text-centered': isCenter }]">
+    {{ message }}
+  </div>
 </template>
 
 <style scoped>

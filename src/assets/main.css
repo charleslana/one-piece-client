@@ -35,7 +35,7 @@
 * {
   font-family: 'Roboto', sans-serif;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  color: #222 !important;
+  color: #222;
 }
 
 *::-webkit-scrollbar {
@@ -69,6 +69,19 @@ body {
   .bg {
     min-height: calc(100vh - 50px) !important;
   }
+}
+
+.link {
+  color: #222 !important;
+}
+
+.link:hover {
+  color: #222 !important;
+  text-decoration: underline !important;
+}
+
+.black {
+  color: #222 !important;
 }
 
 .btn {
@@ -121,4 +134,8 @@ body {
   border: 3px solid #c07617;
   padding: 1rem;
   margin-bottom: 1rem !important;
+}
+
+.is-borderless:focus {
+  border-color: hsl(221, 14%, calc(86% + 0%)) !important;
 }
