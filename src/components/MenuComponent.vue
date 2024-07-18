@@ -16,7 +16,20 @@ const menuOff = ref<Menu[]>([
   { name: 'Cadastro', icon: 'menu-register', route: '/register' },
   { name: 'Login', icon: 'menu-login', route: '/login' }
 ]);
-const menuOn = ref<Menu[]>([]);
+const menuOn = ref<Menu[]>([
+  { name: 'Geral', icon: 'menu-main', route: '/general' },
+  { name: 'Correio', icon: 'menu-main', route: '/message' },
+  { name: 'Explorar', icon: 'menu-main', route: '/explore' },
+  { name: 'História', icon: 'menu-main', route: '/history' },
+  { name: 'PVP', icon: 'menu-main', route: '/pvp' },
+  { name: 'Batalhar', icon: 'menu-main', route: '/battle' },
+  { name: 'Grupos', icon: 'menu-main', route: '/group' },
+  { name: 'Shop', icon: 'menu-main', route: '/shop' },
+  { name: 'Ranking', icon: 'menu-main', route: '/ranking' },
+  { name: 'Tutorial', icon: 'menu-main', route: '/tutorial' },
+  { name: 'Opções', icon: 'menu-main', route: '/settings' },
+  { name: 'Sair', icon: 'menu-main', route: '/logout' }
+]);
 const menuList = ref<Menu[]>([]);
 
 onMounted(() => {

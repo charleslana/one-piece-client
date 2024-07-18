@@ -4,6 +4,7 @@ import { Breed } from '@/enums/breed';
 import { Classe } from '@/enums/classe';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
+import router from '@/router';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
 import { isValidName, logout } from '@/utils/utils';
@@ -18,7 +19,6 @@ const avatarId = ref<number>();
 const avatars = ref<number[]>([1, 2, 3, 4, 5]);
 const error = ref('');
 const isLoading = ref(false);
-const isSuccess = ref(false);
 
 function createCharacter(): void {
   error.value = '';
@@ -32,13 +32,13 @@ function createCharacter(): void {
   }
   isLoading.value = true;
   setTimeout(() => {
-    const e = true;
+    const e = false;
     if (e) {
       error.value = 'Nome do personagem já existe.';
       isLoading.value = false;
       return;
     }
-    isSuccess.value = true;
+    router.push('/welcome');
   }, 1000);
 }
 </script>

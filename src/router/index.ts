@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
+import WelcomeView from '@/views/WelcomeView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -37,6 +38,12 @@ const router = createRouter({
       name: 'create-character',
       component: CreateCharacterView,
       meta: { title: getTitle('Criar personagem') }
+    },
+    {
+      path: '/welcome',
+      name: 'welcome',
+      component: WelcomeView,
+      meta: { title: getTitle('Bem vindo') }
     },
     {
       path: '/:catchAll(.*)',

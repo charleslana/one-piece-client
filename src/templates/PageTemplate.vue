@@ -2,15 +2,21 @@
 import FooterComponent from '@/components/FooterComponent.vue';
 import NavBarComponent from '@/components/NavBarComponent.vue';
 
-defineProps<{
-  type: 'on' | 'off' | 'none';
-}>();
+withDefaults(
+  defineProps<{
+    type: 'on' | 'off' | 'none';
+    bg?: '01' | '02' | '03' | '04' | '05' | '06' | '07' | '08';
+  }>(),
+  {
+    bg: '01'
+  }
+);
 </script>
 
 <template>
   <div class="theme-light bg">
     <NavBarComponent :type="type" />
-    <div class="wrapper">
+    <div class="wrapper" :class="`wrapper-${bg}`">
       <div class="columns is-gapless">
         <div class="column is-one-fifth custom-menu is-hidden-mobile"></div>
         <div class="column">
