@@ -1,3 +1,4 @@
+import CreateCharacterView from '@/views/CreateCharacterView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
@@ -30,6 +31,12 @@ const router = createRouter({
       name: 'recovery-password',
       component: RecoveryPasswordView,
       meta: { title: getTitle('Login') }
+    },
+    {
+      path: '/create-character',
+      name: 'create-character',
+      component: CreateCharacterView,
+      meta: { title: getTitle('Criar personagem') }
     },
     {
       path: '/:catchAll(.*)',

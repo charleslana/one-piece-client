@@ -18,7 +18,7 @@ function login(): void {
   }
   isLoading.value = true;
   setTimeout(() => {
-    const e = true;
+    const e = false;
     if (e) {
       error.value = 'E-mail ou senha inválida.';
       isLoading.value = false;
