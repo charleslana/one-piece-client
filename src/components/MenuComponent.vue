@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   type: 'on' | 'off' | 'none';
@@ -33,15 +33,26 @@ const menuOn = ref<Menu[]>([
 const menuList = ref<Menu[]>([]);
 
 onMounted(() => {
-  if (props.type === 'none') {
+  changeType(props.type);
+});
+
+watch(
+  () => props.type,
+  (newType) => {
+    changeType(newType);
+  }
+);
+
+function changeType(type: 'on' | 'off' | 'none'): void {
+  if (type === 'none') {
     return;
   }
-  if (props.type === 'on') {
+  if (type === 'on') {
     menuList.value = menuOn.value;
     return;
   }
   menuList.value = menuOff.value;
-});
+}
 </script>
 
 <template>

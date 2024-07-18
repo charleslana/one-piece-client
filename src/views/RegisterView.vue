@@ -62,7 +62,7 @@ function validate(): void {
       <p class="is-size-4" v-if="isSuccess">
         Parabéns, Sua conta foi criada com sucesso! Boa sorte na sua aventura.
       </p>
-      <span v-else>
+      <section v-else>
         <p>Crie sua conta para enfrentar os desafios que o aguardam neste jogo!</p>
         <form @submit.prevent="register">
           <div class="columns">
@@ -176,7 +176,7 @@ function validate(): void {
             </div>
           </div>
         </form>
-      </span>
+      </section>
     </template>
   </PageTemplate>
   <AlertComponent :messages="messages" v-if="isAlert" @close="isAlert = false" />

@@ -4,7 +4,6 @@ import { Breed } from '@/enums/breed';
 import { Classe } from '@/enums/classe';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
-import router from '@/router';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
 import { isValidName, logout } from '@/utils/utils';
@@ -19,6 +18,8 @@ const avatarId = ref<number>();
 const avatars = ref<number[]>([1, 2, 3, 4, 5]);
 const error = ref('');
 const isLoading = ref(false);
+const isSuccess = ref(false);
+const type = ref<'none' | 'on' | 'off'>('none');
 
 function createCharacter(): void {
   error.value = '';
@@ -38,151 +39,172 @@ function createCharacter(): void {
       isLoading.value = false;
       return;
     }
-    router.push('/welcome');
+    isSuccess.value = true;
+    type.value = 'on';
   }, 1000);
 }
 </script>
 
 <template>
-  <PageTemplate type="none">
+  <PageTemplate :type="type">
     <template #wrapper-container>
-      <TitleComponent title="Crie seu personagem" />
-      <form @submit.prevent="createCharacter">
-        <div class="columns">
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">Nome do seu personagem</label>
-              <div class="control">
-                <input
-                  :class="['input is-shadowless is-borderless', { 'is-danger': error }]"
-                  type="text"
-                  placeholder=""
-                  minlength="3"
-                  maxlength="20"
-                  required
-                  v-model.trim="name"
-                />
-              </div>
-              <p class="help is-danger" v-if="error">{{ error }}</p>
-            </div>
-          </div>
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">Escolha uma facção</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select v-model="faction" class="is-shadowless is-borderless">
-                    <option :value="Faction.Pirate">Pirata</option>
-                    <option :value="Faction.Marine">Marinha</option>
-                    <option :value="Faction.Revolutionary">Revolucionário</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="column is-4">
-            <div class="field">
-              <label class="label">Escolha um mar</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select v-model="sea" class="is-shadowless is-borderless">
-                    <option :value="Sea.NorthBlue">North Blue</option>
-                    <option :value="Sea.EastBlue">East Blue</option>
-                    <option :value="Sea.SouthBlue">South Blue</option>
-                    <option :value="Sea.WestBlue">West Blue</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-4">
-            <div class="field">
-              <label class="label">Escolha sua raça</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select v-model="breed" class="is-shadowless is-borderless">
-                    <option :value="Breed.Human">Humano</option>
-                    <option :value="Breed.Dwarf">Anão</option>
-                    <option :value="Breed.Giant">Gigante</option>
-                    <option :value="Breed.Merman">Tritão</option>
-                    <option :value="Breed.Cyborg">Ciborgue</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-4">
-            <div class="field">
-              <label class="label">Escolha sua classe</label>
-              <div class="control">
-                <div class="select is-fullwidth">
-                  <select v-model="classe" class="is-shadowless is-borderless">
-                    <option :value="Classe.Swordsman">Espadachim</option>
-                    <option :value="Classe.Shooter">Atirador</option>
-                    <option :value="Classe.Fighter">Lutador</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="column is-6">
-            <div class="field">
-              <label class="label">Escolha um avatar</label>
-              <small>Você poderá obter novos avatares futuramente</small>
-              <div class="columns is-multiline is-mobile is-gapless mt-5">
-                <div
-                  class="column is-1 is-flex is-align-items-center is-justify-content-center is-51"
-                  v-for="(avatar, index) in avatars"
-                  :key="index"
-                >
-                  <img
-                    :src="getAvatarMini(avatar)"
-                    class="image-size"
-                    alt="Avatar icon"
-                    :class="{ 'avatar-selected': avatarId === avatar }"
-                    @click="avatarId = avatar"
+      <section v-if="!isSuccess">
+        <TitleComponent title="Crie seu personagem" />
+        <form @submit.prevent="createCharacter">
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Nome do seu personagem</label>
+                <div class="control">
+                  <input
+                    :class="['input is-shadowless is-borderless', { 'is-danger': error }]"
+                    type="text"
+                    placeholder=""
+                    minlength="3"
+                    maxlength="20"
+                    required
+                    v-model.trim="name"
                   />
                 </div>
+                <p class="help is-danger" v-if="error">{{ error }}</p>
+              </div>
+            </div>
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Escolha uma facção</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="faction" class="is-shadowless is-borderless">
+                      <option :value="Faction.Pirate">Pirata</option>
+                      <option :value="Faction.Marine">Marinha</option>
+                      <option :value="Faction.Revolutionary">Revolucionário</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="column is-6">
-            <img
-              :src="getAvatar(avatarId)"
-              alt="Avatar image"
-              class="avatar-selected-image"
-              v-if="avatarId"
-            />
+          <div class="columns">
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">Escolha um mar</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="sea" class="is-shadowless is-borderless">
+                      <option :value="Sea.NorthBlue">North Blue</option>
+                      <option :value="Sea.EastBlue">East Blue</option>
+                      <option :value="Sea.SouthBlue">South Blue</option>
+                      <option :value="Sea.WestBlue">West Blue</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">Escolha sua raça</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="breed" class="is-shadowless is-borderless">
+                      <option :value="Breed.Human">Humano</option>
+                      <option :value="Breed.Dwarf">Anão</option>
+                      <option :value="Breed.Giant">Gigante</option>
+                      <option :value="Breed.Merman">Tritão</option>
+                      <option :value="Breed.Cyborg">Ciborgue</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">Escolha sua classe</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="classe" class="is-shadowless is-borderless">
+                      <option :value="Classe.Swordsman">Espadachim</option>
+                      <option :value="Classe.Shooter">Atirador</option>
+                      <option :value="Classe.Fighter">Lutador</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="field is-grouped">
-          <div class="control">
-            <button
-              type="submit"
-              class="button btn btn-warning"
-              :class="{ 'is-loading': isLoading }"
-              :disabled="isLoading || !avatarId"
-            >
-              Confirmar
-            </button>
+          <div class="columns">
+            <div class="column is-6">
+              <div class="field">
+                <label class="label">Escolha um avatar</label>
+                <small>Você poderá obter novos avatares futuramente</small>
+                <div class="columns is-multiline is-mobile is-gapless mt-5">
+                  <div
+                    class="column is-1 is-flex is-align-items-center is-justify-content-center is-51"
+                    v-for="(avatar, index) in avatars"
+                    :key="index"
+                  >
+                    <img
+                      :src="getAvatarMini(avatar)"
+                      class="image-size"
+                      alt="Avatar icon"
+                      :class="{ 'avatar-selected': avatarId === avatar }"
+                      @click="avatarId = avatar"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-6">
+              <img
+                :src="getAvatar(avatarId)"
+                alt="Avatar image"
+                class="avatar-selected-image"
+                v-if="avatarId"
+              />
+            </div>
           </div>
-          <div class="control">
-            <button
-              type="button"
-              class="button btn btn-warning"
-              :class="{ 'is-loading': isLoading }"
-              :disabled="isLoading"
-              @click="logout"
-            >
-              Sair
-            </button>
+          <div class="field is-grouped">
+            <div class="control">
+              <button
+                type="submit"
+                class="button btn btn-warning"
+                :class="{ 'is-loading': isLoading }"
+                :disabled="isLoading || !avatarId"
+              >
+                Confirmar
+              </button>
+            </div>
+            <div class="control">
+              <button
+                type="button"
+                class="button btn btn-warning"
+                :class="{ 'is-loading': isLoading }"
+                :disabled="isLoading"
+                @click="logout"
+              >
+                Sair
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </section>
+      <section v-else>
+        <TitleComponent :title="`${name} (${faction})`" />
+        <p>
+          Você é um {{ breed }} que desde pequeno quer se tornar o rei dos piratas. Com o passar dos
+          anos se destacou entre as pessoas comuns e começou a perceber que era diferente,
+          reconhecendo que possuía uma força interna elevada. Após pesquisar muito descobriu que
+          essa força se chama 'Haki', e está presente em todos seres vivos, e com treinamento pode
+          aprender a usar esse haki para várias funções. Com isso em mente você parte em uma jornada
+          pelo mundo, para evoluir seu poder e conhecimentos.
+        </p>
+        <p class="font-luck mt-5 is-size-4">Primeiros passos:</p>
+        <p>Ler o Tutorial para aprender as funções do jogo.</p>
+        <RouterLink to="/tutorial" class="button btn btn-warning">Ler tutorial</RouterLink>
+        <p class="mt-5">Ou você pode ir até o navio do Gol D. Roger para começar sua aventura.</p>
+        <RouterLink to="/gol-d-roger" class="button btn btn-warning"
+          >Vistar Gol D. Roger</RouterLink
+        >
+      </section>
     </template>
   </PageTemplate>
 </template>

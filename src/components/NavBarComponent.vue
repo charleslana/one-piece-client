@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import MenuComponent from './MenuComponent.vue';
 
 const props = defineProps<{
@@ -26,30 +26,40 @@ const menuOff = ref<Menu[]>([
 ]);
 const menuOn = ref<Menu[]>([]);
 const menuList = ref<Menu[]>([]);
-
-onMounted(() => {
-  if (props.type === 'none') {
-    return;
-  }
-  if (props.type === 'on') {
-    buttons.value = buttonOn.value;
-    menuList.value = menuOn.value;
-    return;
-  }
-  buttons.value = buttonOff.value;
-  menuList.value = menuOff.value;
-});
-
-const toggleNavbar = () => {
-  navbarOpen.value = !navbarOpen.value;
-};
-
 const buttons = ref<Navbar[]>([]);
 const buttonOff = ref<Navbar[]>([
   { name: 'Cadastro', route: '/register' },
   { name: 'Login', route: '/login' }
 ]);
 const buttonOn = ref<Navbar[]>([{ name: 'Sair', route: '/logout' }]);
+
+onMounted(() => {
+  changeType(props.type);
+});
+
+watch(
+  () => props.type,
+  (newType) => {
+    changeType(newType);
+  }
+);
+
+function toggleNavbar(): void {
+  navbarOpen.value = !navbarOpen.value;
+}
+
+function changeType(type: 'on' | 'off' | 'none'): void {
+  if (type === 'none') {
+    return;
+  }
+  if (type === 'on') {
+    buttons.value = buttonOn.value;
+    menuList.value = menuOn.value;
+    return;
+  }
+  buttons.value = buttonOff.value;
+  menuList.value = menuOff.value;
+}
 </script>
 
 <template>
