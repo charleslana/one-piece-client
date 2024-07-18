@@ -7,7 +7,7 @@ const props = defineProps<{
 
 interface Menu {
   name: string;
-  icon: 'menu-main' | 'menu-register' | 'menu-login';
+  icon: string;
   route: string;
 }
 
@@ -17,18 +17,18 @@ const menuOff = ref<Menu[]>([
   { name: 'Login', icon: 'menu-login', route: '/login' }
 ]);
 const menuOn = ref<Menu[]>([
-  { name: 'Geral', icon: 'menu-main', route: '/general' },
-  { name: 'Correio', icon: 'menu-main', route: '/message' },
-  { name: 'Explorar', icon: 'menu-main', route: '/explore' },
-  { name: 'História', icon: 'menu-main', route: '/history' },
-  { name: 'PVP', icon: 'menu-main', route: '/pvp' },
-  { name: 'Batalhar', icon: 'menu-main', route: '/battle' },
-  { name: 'Grupos', icon: 'menu-main', route: '/group' },
-  { name: 'Shop', icon: 'menu-main', route: '/shop' },
-  { name: 'Ranking', icon: 'menu-main', route: '/ranking' },
-  { name: 'Tutorial', icon: 'menu-main', route: '/tutorial' },
-  { name: 'Opções', icon: 'menu-main', route: '/settings' },
-  { name: 'Sair', icon: 'menu-main', route: '/logout' }
+  { name: 'Geral', icon: 'menu-general', route: '/general' },
+  { name: 'Correio', icon: 'menu-message', route: '/message' },
+  { name: 'Explorar', icon: 'menu-explore', route: '/explore' },
+  { name: 'História', icon: 'menu-history', route: '/history' },
+  { name: 'PVP', icon: 'menu-pvp', route: '/pvp' },
+  { name: 'Batalhar', icon: 'menu-battle', route: '/battle' },
+  { name: 'Grupos', icon: 'menu-group', route: '/group' },
+  { name: 'Shop', icon: 'menu-shop', route: '/shop' },
+  { name: 'Ranking', icon: 'menu-ranking', route: '/ranking' },
+  { name: 'Tutorial', icon: 'menu-tutorial', route: '/tutorial' },
+  { name: 'Opções', icon: 'menu-settings', route: '/settings' },
+  { name: 'Sair', icon: 'menu-logout', route: '/logout' }
 ]);
 const menuList = ref<Menu[]>([]);
 
@@ -121,6 +121,114 @@ onMounted(() => {
 
 .menu-login {
   background-image: url('../assets/images/menu/login.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-battle {
+  background-image: url('../assets/images/menu/battle.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-explore {
+  background-image: url('../assets/images/menu/explore.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-general {
+  background-image: url('../assets/images/menu/general.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-group {
+  background-image: url('../assets/images/menu/group.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-history {
+  background-image: url('../assets/images/menu/history.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-logout {
+  background-image: url('../assets/images/menu/logout.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-message {
+  background-image: url('../assets/images/menu/message.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-pvp {
+  background-image: url('../assets/images/menu/pvp.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-ranking {
+  background-image: url('../assets/images/menu/ranking.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-settings {
+  background-image: url('../assets/images/menu/settings.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-shop {
+  background-image: url('../assets/images/menu/shop.png');
+  width: 37px;
+  height: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-tutorial {
+  background-image: url('../assets/images/menu/tutorial.png');
   width: 37px;
   height: 45px;
   background-size: contain;
