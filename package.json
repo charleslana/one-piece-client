@@ -11,7 +11,8 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "start": "npm run build && npx serve dist -s -l 4000"
+    "start": "npm run build && npx serve dist -s -l 4000",
+    "kill": "kill -9 $(lsof -ti:5173)"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -22,6 +23,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.7.2",
     "bulma": "^1.0.1",
+    "floating-vue": "^5.2.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",

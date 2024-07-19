@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import CardComponent from '@/components/CardComponent.vue';
+import NewsComponent from '@/components/NewsComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import PageTemplate from '@/templates/PageTemplate.vue';
-import { getAvatar } from '@/utils/avatar-utils';
-import { formatFullDate } from '@/utils/utils';
+import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
 
 const statusList = [
   { name: 'Raça', icon: ['fas', 'user'], value: 'Humano' },
@@ -19,40 +19,11 @@ const statusList = [
   { name: 'Stamina', icon: ['fas', 'battery-full'], value: '100%' }
 ];
 
-const newsList = [
-  {
-    id: 1,
-    title: 'Nova Atualização de Sistema',
-    date: '2024-07-19 14:51',
-    content: 'Boa tarde, estamos refazendo o projeto para melhor atender nossos usuários.',
-    likes: 1,
-    dislikes: 2
-  },
-  {
-    id: 2,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 5,
-    dislikes: 0
-  },
-  {
-    id: 3,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 0,
-    dislikes: 0
-  },
-  {
-    id: 4,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 0,
-    dislikes: 0
-  }
+const topGeneral = [
+  { name: 'Nome', avatar: 1, battlePower: 8845215, guildTag: 'TAG' },
+  { name: 'Nome2', avatar: 2, battlePower: 8845215, guildTag: '' }
 ];
+const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
 </script>
 
 <template>
@@ -89,36 +60,47 @@ const newsList = [
           </CardComponent>
         </div>
         <div class="column is-4">
-          <CardComponent title="Novidades" :max-height="435">
+          <NewsComponent />
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-4">
+          <CardComponent
+            title="Top 10 personagens"
+            tooltip="Jogadores em Geral. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
+            footer-name="Ver Ranking"
+            footer-link="/ranking"
+          >
             <template #content>
-              <section v-for="(news, index) in newsList" :key="index" class="mb-4">
-                <div class="font-luck is-size-5">{{ news.title }}</div>
-                <font-awesome-icon :icon="['far', 'clock']" class="mr-2" />
-                <span class="font-press2p is-size-8">{{
-                  formatFullDate(new Date(news.date))
-                }}</span>
-                <div class="box">
-                  <p class="font-press2p is-size-7 max-size">{{ news.content }}</p>
-                  <div class="level">
-                    <div class="level-left">
-                      <div class="is-flex">
-                        <div>
-                          <font-awesome-icon :icon="['fas', 'thumbs-up']" /> {{ news.likes }}
-                        </div>
-                        <div class="ml-2">
-                          <font-awesome-icon :icon="['fas', 'thumbs-down']" /> {{ news.dislikes }}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="level-right">
-                      <button class="button btn btn-warning">Ler</button>
-                    </div>
-                  </div>
-                </div>
-              </section>
+              <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                <tbody>
+                  <tr
+                    class="has-text-centered"
+                    v-for="(top, index) in duplicatedArray.flat()"
+                    :key="index"
+                  >
+                    <td class="middle">{{ index + 1 }}</td>
+                    <td class="middle">
+                      <figure class="image is-48x48">
+                        <img
+                          :src="getAvatarMini(top.avatar)"
+                          alt="Avatar image"
+                          class="is-rounded"
+                        />
+                      </figure>
+                    </td>
+                    <td class="middle">
+                      {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                    </td>
+                    <td class="middle">PL: {{ top.battlePower }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </template>
           </CardComponent>
         </div>
+        <div class="column is-4"></div>
+        <div class="column is-4"></div>
       </div>
     </template>
   </PageTemplate>
@@ -148,20 +130,5 @@ const newsList = [
 
 .is-link {
   background-color: #337ab7;
-}
-
-.box {
-  padding: 5px;
-  border-radius: 5px;
-  background-color: #fbda8f;
-  overflow-x: hidden;
-  color: #333;
-}
-
-.max-size {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 250px;
 }
 </style>

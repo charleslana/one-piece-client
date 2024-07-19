@@ -4,6 +4,7 @@ defineProps<{
   footerName?: string;
   footerLink?: string;
   maxHeight?: number;
+  tooltip?: string;
 }>();
 </script>
 
@@ -11,7 +12,15 @@ defineProps<{
   <div class="card">
     <header class="card-header is-align-items-center">
       <img src="../assets/images/icons/card-title.png" alt="Card title icon" class="icon-title" />
-      <p class="card-header-title font-luck is-size-4">{{ title }}</p>
+      <p class="card-header-title font-luck is-size-4 is-align-items-start">
+        {{ title }}
+        <font-awesome-icon
+          :icon="['fas', 'circle-question']"
+          class="ml-2 tooltip-help"
+          v-tooltip="tooltip"
+          v-if="tooltip"
+        />
+      </p>
     </header>
     <div
       class="card-content"
@@ -51,5 +60,9 @@ defineProps<{
 
 .icon-title {
   height: 40px;
+}
+
+.tooltip-help {
+  color: white;
 }
 </style>

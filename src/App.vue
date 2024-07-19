@@ -4,6 +4,10 @@ import { RouterView } from 'vue-router';
 
 <template>
   <RouterView />
+  <!-- <VTooltip>
+    <button>TEST</button>
+    <template #popper> TEST TOOLTIP </template>
+  </VTooltip> -->
 </template>
 
 <style scoped></style>
