@@ -3,6 +3,7 @@ defineProps<{
   title: string;
   footerName?: string;
   footerLink?: string;
+  maxHeight?: number;
 }>();
 </script>
 
@@ -12,7 +13,10 @@ defineProps<{
       <img src="../assets/images/icons/card-title.png" alt="Card title icon" class="icon-title" />
       <p class="card-header-title font-luck is-size-4">{{ title }}</p>
     </header>
-    <div class="card-content">
+    <div
+      class="card-content"
+      :style="{ maxHeight: maxHeight ? maxHeight + 'px' : 'none', overflow: 'auto' }"
+    >
       <div class="content">
         <slot name="content"></slot>
       </div>

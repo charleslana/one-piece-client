@@ -12,11 +12,14 @@ import {
   faPersonRunning,
   faShield,
   faSitemap,
+  faThumbsDown,
+  faThumbsUp,
   faUniversalAccess,
   faUser,
   faUserTie,
   faWater
 } from '@fortawesome/free-solid-svg-icons';
+import { faClock as farClockRegular } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import './assets/main.css';
@@ -37,7 +40,10 @@ library.add(
   faPersonRunning,
   faShield,
   faHandFist,
-  faUniversalAccess
+  faUniversalAccess,
+  farClockRegular,
+  faThumbsUp,
+  faThumbsDown
 );
 
 const app = createApp(App);

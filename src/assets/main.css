@@ -32,6 +32,11 @@
   src: url('../assets/fonts/Trade-Winds.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'PressStart2P';
+  src: url('../assets/fonts/PressStart2P.ttf') format('truetype');
+}
+
 * {
   font-family: 'Roboto', sans-serif;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -59,6 +64,14 @@
 body {
   margin-top: 80px !important;
   background-color: #ffffff;
+  color: #222;
+}
+
+div,
+p,
+small,
+span,
+strong {
   color: #222;
 }
 
@@ -96,6 +109,10 @@ body {
     0 1px black,
     1px 0 black,
     0 -1px black;
+}
+
+.font-press2p {
+  font-family: 'PressStart2P', cursive;
 }
 
 .btn-warning {
@@ -201,4 +218,8 @@ body {
 
 .blue {
   color: #337ab7;
+}
+
+.is-size-8 {
+  font-size: 0.55rem !important;
 }
