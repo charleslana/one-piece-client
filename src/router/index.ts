@@ -1,4 +1,5 @@
 import CreateCharacterView from '@/views/CreateCharacterView.vue';
+import GeneralView from '@/views/GeneralView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
@@ -39,10 +40,16 @@ const router = createRouter({
       meta: { title: getTitle('Criar personagem') }
     },
     {
+      path: '/general',
+      name: 'general',
+      component: GeneralView,
+      meta: { title: getTitle('Geral') }
+    },
+    {
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: () => import('../views/NotFoundView.vue'),
-      meta: { title: getTitle('Not found') }
+      meta: { title: getTitle('Nada encontrado') }
     }
   ],
   scrollBehavior(_to, _from, savedPosition) {
