@@ -2,6 +2,7 @@ import CreateCharacterView from '@/views/CreateCharacterView.vue';
 import GeneralView from '@/views/GeneralView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import MessageView from '@/views/MessageView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -44,6 +45,12 @@ const router = createRouter({
       name: 'general',
       component: GeneralView,
       meta: { title: getTitle('Geral') }
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component: MessageView,
+      meta: { title: getTitle('Correio') }
     },
     {
       path: '/:catchAll(.*)',

@@ -13,9 +13,9 @@ defineProps<{
     <NavBarComponent :type="type" />
     <div class="wrapper" :class="`wrapper-${bg || '01'}`">
       <div class="columns is-gapless">
-        <div class="column is-one-fifth custom-menu is-hidden-mobile"></div>
+        <div class="column is-one-fifth is-hidden-mobile custom-size"></div>
         <div class="column">
-          <div class="container wrapper-container">
+          <div class="wrapper-container container">
             <slot name="wrapper-container"></slot>
           </div>
         </div>
@@ -25,4 +25,8 @@ defineProps<{
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.custom-size {
+  width: 225px !important;
+}
+</style>
