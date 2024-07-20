@@ -72,8 +72,10 @@ function showNewsInModal(id: number): void {
           <div class="level">
             <div class="level-left">
               <div class="is-flex">
-                <div><font-awesome-icon :icon="['fas', 'thumbs-up']" /> {{ news.likes }}</div>
-                <div class="ml-2">
+                <div class="is-clickable">
+                  <font-awesome-icon :icon="['fas', 'thumbs-up']" /> {{ news.likes }}
+                </div>
+                <div class="ml-2 is-clickable">
                   <font-awesome-icon :icon="['fas', 'thumbs-down']" /> {{ news.dislikes }}
                 </div>
               </div>
