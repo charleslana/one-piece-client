@@ -1,3 +1,4 @@
+import { isAuthenticated } from '@/utils/local-storage-utils';
 import CreateCharacterView from '@/views/CreateCharacterView.vue';
 import GeneralView from '@/views/GeneralView.vue';
 import HomeView from '@/views/HomeView.vue';
@@ -38,19 +39,19 @@ const router = createRouter({
       path: '/create-character',
       name: 'create-character',
       component: CreateCharacterView,
-      meta: { title: getTitle('Criar personagem') }
+      meta: { title: getTitle('Criar personagem'), requiresAuth: true }
     },
     {
       path: '/general',
       name: 'general',
       component: GeneralView,
-      meta: { title: getTitle('Geral') }
+      meta: { title: getTitle('Geral'), requiresAuth: true }
     },
     {
       path: '/message',
       name: 'message',
       component: MessageView,
-      meta: { title: getTitle('Correio') }
+      meta: { title: getTitle('Correio'), requiresAuth: true }
     },
     {
       path: '/:catchAll(.*)',
@@ -72,6 +73,7 @@ export default router;
 
 interface RouteMeta {
   title?: string;
+  requiresAuth?: boolean;
 }
 
 router.beforeEach((to, _from, next) => {
@@ -81,7 +83,16 @@ router.beforeEach((to, _from, next) => {
   } else {
     document.title = getTitle();
   }
-  next();
+  const requiresAuth = meta.requiresAuth;
+  const publicPages = ['login', 'register', 'home', 'recovery-password'];
+  const isPublicPage = publicPages.includes(to.name as string);
+  if (!isAuthenticated() && requiresAuth) {
+    next({ name: 'login' });
+  } else if (isAuthenticated() && isPublicPage) {
+    next({ name: 'general' });
+  } else {
+    next();
+  }
 });
 
 function getTitle(title?: string): string {

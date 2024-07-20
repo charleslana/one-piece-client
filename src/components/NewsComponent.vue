@@ -2,7 +2,7 @@
 import CardComponent from '@/components/CardComponent.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
-import { formatFullDate } from '@/utils/utils';
+import { formatCompactNumber, formatFullDate } from '@/utils/utils';
 import { ref } from 'vue';
 
 const isModal = ref(false);
@@ -17,7 +17,8 @@ const newsList = [
     date: '2024-07-19 14:51',
     content: 'Boa tarde, estamos refazendo o projeto para melhor atender nossos usuários.',
     likes: 1,
-    dislikes: 2
+    dislikes: 2,
+    hasLiked: true
   },
   {
     id: 2,
@@ -32,8 +33,8 @@ const newsList = [
     title: 'Anúncio Importante',
     date: '2024-07-19 09:30',
     content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 0,
-    dislikes: 0
+    likes: 99999,
+    dislikes: 9998
   },
   {
     id: 4,
@@ -72,11 +73,13 @@ function showNewsInModal(id: number): void {
           <div class="level">
             <div class="level-left">
               <div class="is-flex">
-                <div class="is-clickable">
-                  <font-awesome-icon :icon="['fas', 'thumbs-up']" /> {{ news.likes }}
+                <div class="is-clickable has-text-weight-bold" :class="{ green: news.hasLiked }">
+                  <font-awesome-icon :icon="['fas', 'thumbs-up']" />
+                  {{ formatCompactNumber(news.likes) }}
                 </div>
-                <div class="ml-2 is-clickable">
-                  <font-awesome-icon :icon="['fas', 'thumbs-down']" /> {{ news.dislikes }}
+                <div class="ml-2 is-clickable has-text-weight-bold">
+                  <font-awesome-icon :icon="['fas', 'thumbs-down']" />
+                  {{ formatCompactNumber(news.dislikes) }}
                 </div>
               </div>
             </div>
@@ -139,5 +142,9 @@ function showNewsInModal(id: number): void {
   background-size: cover;
   background-repeat: no-repeat;
   vertical-align: middle;
+}
+
+.green {
+  color: green;
 }
 </style>

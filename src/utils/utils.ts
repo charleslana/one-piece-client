@@ -33,6 +33,16 @@ export function formatFullDate(data: Date): string {
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 }
 
+export const formatNumber = (number: number): string => {
+  number = +number;
+  return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+};
+
+export function formatCompactNumber(number: number): string {
+  const formatter = new Intl.NumberFormat('en-US', { notation: 'compact' });
+  return formatter.format(number);
+}
+
 export function logout(): void {
   router.push('/login');
 }

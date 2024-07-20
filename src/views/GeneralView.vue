@@ -4,13 +4,14 @@ import NewsComponent from '@/components/NewsComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
+import { formatNumber } from '@/utils/utils';
 
 const statusList = [
   { name: 'Raça', icon: ['fas', 'user'], value: 'Humano' },
   { name: 'Facção', icon: ['fas', 'sitemap'], value: 'Pirata' },
   { name: 'Classe', icon: ['fas', 'user-tie'], value: 'Espadachim' },
   { name: 'Mar', icon: ['fas', 'water'], value: 'North Blue' },
-  { name: 'Power de Luta (PL)', icon: ['fas', 'universal-access'], value: '130' },
+  { name: 'Power de Luta (PL)', icon: ['fas', 'universal-access'], value: formatNumber(130500) },
   { name: 'Força', icon: ['fas', 'hand-fist'], value: '25' },
   { name: 'Defesa', icon: ['fas', 'shield'], value: '25' },
   { name: 'Agilidade', icon: ['fas', 'person-running'], value: '25' },
@@ -72,30 +73,32 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
             footer-link="/ranking"
           >
             <template #content>
-              <table class="table mx-auto is-striped is-fullwidth is-hoverable">
-                <tbody>
-                  <tr
-                    class="has-text-centered"
-                    v-for="(top, index) in duplicatedArray.flat()"
-                    :key="index"
-                  >
-                    <td class="middle">{{ index + 1 }}</td>
-                    <td class="middle">
-                      <figure class="image is-48x48">
-                        <img
-                          :src="getAvatarMini(top.avatar)"
-                          alt="Avatar image"
-                          class="is-rounded"
-                        />
-                      </figure>
-                    </td>
-                    <td class="middle">
-                      {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
-                    </td>
-                    <td class="middle">PL: {{ top.battlePower }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr
+                      class="has-text-centered"
+                      v-for="(top, index) in duplicatedArray.flat()"
+                      :key="index"
+                    >
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
           </CardComponent>
         </div>
@@ -107,73 +110,79 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
             footer-link="/ranking"
           >
             <template #content>
-              <table class="table mx-auto is-striped is-fullwidth is-hoverable">
-                <tbody>
-                  <tr
-                    class="has-text-centered"
-                    v-for="(top, index) in duplicatedArray.flat()"
-                    :key="index"
-                  >
-                    <td class="middle">{{ index + 1 }}</td>
-                    <td class="middle">
-                      <figure class="image is-48x48">
-                        <img
-                          :src="getAvatarMini(top.avatar)"
-                          alt="Avatar image"
-                          class="is-rounded"
-                        />
-                      </figure>
-                    </td>
-                    <td class="middle">
-                      {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
-                    </td>
-                    <td class="middle">PL: {{ top.battlePower }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr
+                      class="has-text-centered"
+                      v-for="(top, index) in duplicatedArray.flat()"
+                      :key="index"
+                    >
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
           </CardComponent>
         </div>
         <div class="column is-4">
           <CardComponent title="O vitorioso">
             <template #content>
-              <table class="table mx-auto is-striped is-fullwidth is-hoverable">
-                <tbody>
-                  <tr class="has-text-centered">
-                    <td class="middle">
-                      <figure class="image is-48x48">
-                        <img :src="getAvatarMini(1)" alt="Avatar image" class="is-rounded" />
-                      </figure>
-                    </td>
-                    <td class="middle">[TAG] Nome</td>
-                    <td class="middle">Vitórias Seguidas: 394</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr class="has-text-centered">
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img :src="getAvatarMini(1)" alt="Avatar image" class="is-rounded" />
+                        </figure>
+                      </td>
+                      <td class="middle">[TAG] Nome</td>
+                      <td class="middle">Vitórias Seguidas: 394</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
           </CardComponent>
           <CardComponent title="Os 3 mais ricos">
             <template #content>
-              <table class="table mx-auto is-striped is-fullwidth is-hoverable">
-                <tbody>
-                  <tr class="has-text-centered" v-for="(top, index) in topGeneral" :key="index">
-                    <td class="middle">{{ index + 1 }}</td>
-                    <td class="middle">
-                      <figure class="image is-48x48">
-                        <img
-                          :src="getAvatarMini(top.avatar)"
-                          alt="Avatar image"
-                          class="is-rounded"
-                        />
-                      </figure>
-                    </td>
-                    <td class="middle">
-                      {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
-                    </td>
-                    <td class="middle">Berries: {{ top.battlePower }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr class="has-text-centered" v-for="(top, index) in topGeneral" :key="index">
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">Berries: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
           </CardComponent>
         </div>
