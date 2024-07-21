@@ -1,12 +1,13 @@
-import { isAuthenticated } from '@/utils/local-storage-utils';
 import CreateCharacterView from '@/views/CreateCharacterView.vue';
 import GeneralView from '@/views/GeneralView.vue';
+import HistoryView from '@/views/HistoryView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import MessageView from '@/views/MessageView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import { isAuthenticated } from '@/utils/local-storage-utils';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,12 @@ const router = createRouter({
       name: 'message',
       component: MessageView,
       meta: { title: getTitle('Correio'), requiresAuth: true }
+    },
+    {
+      path: '/history',
+      name: 'history',
+      component: HistoryView,
+      meta: { title: getTitle('História'), requiresAuth: true }
     },
     {
       path: '/:catchAll(.*)',

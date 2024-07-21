@@ -110,6 +110,7 @@ function changeType(type: 'on' | 'off' | 'none'): void {
   font-size: 24px;
   border-color: #eea236;
   color: #eaea00 !important;
+  overflow-wrap: anywhere;
 }
 
 .menu-main {
@@ -261,6 +262,7 @@ function changeType(type: 'on' | 'off' | 'none'): void {
     width: 100%;
     border-top: 1px solid #101010;
     background-color: #fbda8f;
+    max-height: calc(100vh - 50px) !important;
     height: auto !important;
   }
 }

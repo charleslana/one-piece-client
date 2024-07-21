@@ -9,6 +9,7 @@ import imageAvatar4 from '@/assets/images/avatar/4.png';
 import imageAvatar4Mini from '@/assets/images/avatar/4-mini.png';
 import imageAvatar5 from '@/assets/images/avatar/5.png';
 import imageAvatar5Mini from '@/assets/images/avatar/5-mini.png';
+import imageHistory1 from '@/assets/images/history/1.png';
 
 const images = {
   imageBanner1,
@@ -21,7 +22,8 @@ const images = {
   imageAvatar4,
   imageAvatar4Mini,
   imageAvatar5,
-  imageAvatar5Mini
+  imageAvatar5Mini,
+  imageHistory1
 };
 
 export default images;

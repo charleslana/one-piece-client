@@ -191,29 +191,4 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
   </PageTemplate>
 </template>
 
-<style scoped>
-.list-group-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  padding: 10px 15px;
-  margin-bottom: -1px;
-}
-
-.list-group-item:first-child {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-
-.list-group-item:last-child {
-  margin-bottom: 0;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-.is-link {
-  background-color: #337ab7;
-}
-</style>
+<style scoped></style>
