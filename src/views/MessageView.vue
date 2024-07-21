@@ -285,7 +285,7 @@ function showMessage(message: Message): void {
   <AlertComponent :messages="[alertMessage]" v-if="isAlert" @close="isAlert = false" />
   <ModalComponent v-if="isModal" @close="isModal = false">
     <template #content>
-      <div>
+      <div class="theme-light">
         <div class="field">
           <label class="label">De:</label>
           <div class="control">
