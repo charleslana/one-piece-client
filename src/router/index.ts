@@ -4,6 +4,7 @@ import HistoryView from '@/views/HistoryView.vue';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import MessageView from '@/views/MessageView.vue';
+import RankingView from '@/views/RankingView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -59,6 +60,12 @@ const router = createRouter({
       name: 'history',
       component: HistoryView,
       meta: { title: getTitle('História'), requiresAuth: true }
+    },
+    {
+      path: '/ranking',
+      name: 'ranking',
+      component: RankingView,
+      meta: { title: getTitle('Classificação'), requiresAuth: true }
     },
     {
       path: '/:catchAll(.*)',
