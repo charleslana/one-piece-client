@@ -45,7 +45,14 @@ const router = createRouter({
       path: '/create-character',
       name: 'create-character',
       component: CreateCharacterView,
-      meta: { title: getTitle('Criar personagem'), requiresAuth: true }
+      meta: { title: getTitle('Criar personagem'), requiresAuth: true },
+      beforeEnter: (to, _from, next) => {
+        if (to.query.access === 'true') {
+          next();
+        } else {
+          next({ name: 'home' });
+        }
+      }
     },
     {
       path: '/general',

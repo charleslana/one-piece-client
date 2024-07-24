@@ -31,7 +31,7 @@ async function asyncLogin(): Promise<void> {
   try {
     const accessToken = await AuthService.login(email.value, password.value);
     saveAccessToken(accessToken);
-    router.push('/create-character');
+    router.push({ name: 'create-character', query: { access: 'true' } });
   } catch (e) {
     error.value = getError(e);
     isLoading.value = false;
