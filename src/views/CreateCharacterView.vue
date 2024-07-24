@@ -4,9 +4,10 @@ import { Breed } from '@/enums/breed';
 import { Classe } from '@/enums/classe';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
+import router from '@/router';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
-import { isValidName, logout } from '@/utils/utils';
+import { isValidName } from '@/utils/utils';
 import { ref } from 'vue';
 
 const name = ref('');
@@ -42,6 +43,10 @@ function createCharacter(): void {
     isSuccess.value = true;
     type.value = 'on';
   }, 1000);
+}
+
+function logout(): void {
+  router.push('/logout');
 }
 </script>
 

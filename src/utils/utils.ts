@@ -1,4 +1,5 @@
-import router from '@/router';
+import type ResponseApi from '@/interfaces/response-api';
+import type { AxiosError } from 'axios';
 
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,6 +44,15 @@ export function formatCompactNumber(number: number): string {
   return formatter.format(number);
 }
 
-export function logout(): void {
-  router.push('/login');
+export function getError(e: unknown): string {
+  const axiosError = e as AxiosError;
+  const error = axiosError.response?.data;
+  if (!error) {
+    return 'Erro desconhecido, entre em contato com o administrador.';
+  }
+  const responseApi = error as ResponseApi;
+  if (Array.isArray(responseApi.message)) {
+    return responseApi.message.join(', ');
+  }
+  return responseApi.message;
 }

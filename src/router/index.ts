@@ -8,7 +8,11 @@ import RankingView from '@/views/RankingView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { isAuthenticated } from '@/utils/local-storage-utils';
+import { isAuthenticated, removeAccessToken } from '@/utils/local-storage-utils';
+
+const BlankComponent = {
+  template: '<div></div>'
+};
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,6 +70,15 @@ const router = createRouter({
       name: 'ranking',
       component: RankingView,
       meta: { title: getTitle('Classificação'), requiresAuth: true }
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: BlankComponent,
+      beforeEnter: (_to, _from, next) => {
+        removeAccessToken();
+        next({ name: 'login' });
+      }
     },
     {
       path: '/:catchAll(.*)',

@@ -3,7 +3,8 @@ import TitleComponent from '@/components/TitleComponent.vue';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { ref } from 'vue';
 import AlertComponent from '@/components/AlertComponent.vue';
-import { isValidEmail } from '@/utils/utils';
+import { getError, isValidEmail } from '@/utils/utils';
+import UserService from '@/services/user-service';
 
 const email = ref('');
 const password = ref('');
@@ -20,11 +21,7 @@ function register(): void {
     showAlert();
     return;
   }
-  isLoading.value = true;
-  setTimeout(() => {
-    isSuccess.value = true;
-    isLoading.value = false;
-  }, 1000);
+  asyncRegister();
 }
 
 function clearMessages(): void {
@@ -51,6 +48,19 @@ function validate(): void {
   }
   if (password.value !== confirmPassword.value) {
     addMessage('As senhas não estão iguais.');
+  }
+}
+
+async function asyncRegister(): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserService.register({ email: email.value, password: password.value });
+    isSuccess.value = true;
+  } catch (error) {
+    addMessage(getError(error));
+    showAlert();
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

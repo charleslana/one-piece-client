@@ -2,7 +2,10 @@
 import BoxComponent from '@/components/BoxComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import router from '@/router';
+import AuthService from '@/services/auth-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
+import { saveAccessToken } from '@/utils/local-storage-utils';
+import { getError, isValidEmail } from '@/utils/utils';
 import { ref } from 'vue';
 
 const email = ref('');
@@ -16,16 +19,23 @@ function login(): void {
     error.value = 'Preencha o campo.';
     return;
   }
+  if (!isValidEmail(email.value)) {
+    error.value = 'email inválido.';
+    return;
+  }
+  asyncLogin();
+}
+
+async function asyncLogin(): Promise<void> {
   isLoading.value = true;
-  setTimeout(() => {
-    const e = false;
-    if (e) {
-      error.value = 'E-mail ou senha inválida.';
-      isLoading.value = false;
-      return;
-    }
+  try {
+    const accessToken = await AuthService.login(email.value, password.value);
+    saveAccessToken(accessToken);
     router.push('/create-character');
-  }, 1000);
+  } catch (e) {
+    error.value = getError(e);
+    isLoading.value = false;
+  }
 }
 </script>
 
