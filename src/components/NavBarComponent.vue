@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import MenuComponent from './MenuComponent.vue';
+import UserService from '@/services/user-service';
+import router from '@/router';
 
 const props = defineProps<{
   type: 'on' | 'off' | 'none';
@@ -48,17 +50,30 @@ function toggleNavbar(): void {
   navbarOpen.value = !navbarOpen.value;
 }
 
-function changeType(type: 'on' | 'off' | 'none'): void {
+async function changeType(type: 'on' | 'off' | 'none'): Promise<void> {
   if (type === 'none') {
     return;
   }
   if (type === 'on') {
     buttons.value = buttonOn.value;
     menuList.value = menuOn.value;
+    await asyncGetMe();
     return;
   }
   buttons.value = buttonOff.value;
   menuList.value = menuOff.value;
+}
+
+async function asyncGetMe(): Promise<void> {
+  try {
+    const response = await UserService.getMe();
+    if (!response.userCharacter.name) {
+      router.push({ name: 'create-character', query: { access: 'true' } });
+      return;
+    }
+  } catch (e) {
+    // console.log(e);
+  }
 }
 </script>
 

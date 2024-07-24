@@ -1,6 +1,6 @@
 export enum Sea {
-  NorthBlue = 'north-blue',
-  EastBlue = 'east-blue',
-  SouthBlue = 'south-blue',
-  WestBlue = 'west-blue'
+  NorthBlue = 'north_blue',
+  EastBlue = 'east_blue',
+  SouthBlue = 'south_blue',
+  WestBlue = 'west_blue'
 }

@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Breed } from '@/enums/breed';
-import { Classe } from '@/enums/classe';
+import { CharacterClass } from '@/enums/character-class';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
 import router from '@/router';
+import UserCharacterService from '@/services/user-character-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
-import { isValidName } from '@/utils/utils';
+import { getError, isValidName } from '@/utils/utils';
 import { ref } from 'vue';
 
 const name = ref('');
 const faction = ref<Faction>(Faction.Pirate);
 const sea = ref<Sea>(Sea.NorthBlue);
 const breed = ref<Breed>(Breed.Human);
-const classe = ref<Classe>(Classe.Swordsman);
+const characterClass = ref<CharacterClass>(CharacterClass.Swordsman);
 const avatarId = ref<number>();
 const avatars = ref<number[]>([1, 2, 3, 4, 5]);
 const error = ref('');
@@ -22,7 +23,7 @@ const isLoading = ref(false);
 const isSuccess = ref(false);
 const type = ref<'none' | 'on' | 'off'>('none');
 
-function createCharacter(): void {
+async function createCharacter(): Promise<void> {
   error.value = '';
   if (!name.value || !isValidName(name.value)) {
     error.value = 'Nome de personagem inválido';
@@ -32,21 +33,30 @@ function createCharacter(): void {
     error.value = 'O nome deve conter no mínimo 3 caracteres e no máximo 20 caracteres.';
     return;
   }
-  isLoading.value = true;
-  setTimeout(() => {
-    const e = false;
-    if (e) {
-      error.value = 'Nome do personagem já existe.';
-      isLoading.value = false;
-      return;
-    }
-    isSuccess.value = true;
-    type.value = 'on';
-  }, 1000);
+  await asyncCreateCharacter();
 }
 
 function logout(): void {
   router.push('/logout');
+}
+
+async function asyncCreateCharacter(): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserCharacterService.updateUserCharacter({
+      name: name.value,
+      faction: faction.value,
+      sea: sea.value,
+      breed: breed.value,
+      class: characterClass.value
+    });
+    isSuccess.value = true;
+    type.value = 'on';
+  } catch (e) {
+    error.value = getError(e);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -126,10 +136,10 @@ function logout(): void {
                 <label class="label">Escolha sua classe</label>
                 <div class="control">
                   <div class="select is-fullwidth">
-                    <select v-model="classe" class="is-shadowless is-borderless">
-                      <option :value="Classe.Swordsman">Espadachim</option>
-                      <option :value="Classe.Shooter">Atirador</option>
-                      <option :value="Classe.Fighter">Lutador</option>
+                    <select v-model="characterClass" class="is-shadowless is-borderless">
+                      <option :value="CharacterClass.Swordsman">Espadachim</option>
+                      <option :value="CharacterClass.Shooter">Atirador</option>
+                      <option :value="CharacterClass.Fighter">Lutador</option>
                     </select>
                   </div>
                 </div>
@@ -195,12 +205,12 @@ function logout(): void {
       <section v-else>
         <TitleComponent :title="`${name} (${faction})`" />
         <p>
-          Você é um {{ breed }} que desde pequeno quer se tornar o rei dos piratas. Com o passar dos
-          anos se destacou entre as pessoas comuns e começou a perceber que era diferente,
-          reconhecendo que possuía uma força interna elevada. Após pesquisar muito descobriu que
-          essa força se chama 'Haki', e está presente em todos seres vivos, e com treinamento pode
-          aprender a usar esse haki para várias funções. Com isso em mente você parte em uma jornada
-          pelo mundo, para evoluir seu poder e conhecimentos.
+          Você é um {{ breed }} que desde pequeno quer se tornar o mais forte entre todos. Com o
+          passar dos anos se destacou entre os aventureiros comuns e começou a perceber que era
+          diferente, reconhecendo que possuía uma força interna elevada. Após pesquisar muito
+          descobriu que essa força se chama 'Haki', e está presente em todos seres vivos, e com
+          treinamento pode aprender a usar esse haki para várias funções. Com isso em mente você
+          parte em uma jornada pelo mundo, para evoluir seu poder e conhecimentos.
         </p>
         <p class="font-luck mt-5 is-size-4">Primeiros passos:</p>
         <p>Ler o Tutorial para aprender as funções do jogo.</p>

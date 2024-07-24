@@ -7,7 +7,7 @@ export function isValidEmail(email: string): boolean {
 }
 
 export function isValidName(name: string): boolean {
-  const regex = /^[a-zA-Z ]*$/;
+  const regex = /^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/;
   return regex.test(name);
 }
 
@@ -48,7 +48,7 @@ export function getError(e: unknown): string {
   const axiosError = e as AxiosError;
   const error = axiosError.response?.data;
   if (!error) {
-    return 'Erro desconhecido, entre em contato com o administrador.';
+    return `Erro desconhecido, entre em contato com o administrador.\n${error}`;
   }
   const responseApi = error as ResponseApi;
   if (Array.isArray(responseApi.message)) {

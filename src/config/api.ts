@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import router from '@/router';
 import { getAccessToken, removeAccessToken } from '@/utils/local-storage-utils';
 
 const api = axios.create({
@@ -22,7 +23,7 @@ api.interceptors.response.use(
     if (error.response && reloadStatusCodes.includes(error.response.status)) {
       const url = error!.config!.url;
       if (!url || !url.includes('auth/login')) {
-        location.reload();
+        router.push('/login');
         removeAccessToken();
         return;
       }

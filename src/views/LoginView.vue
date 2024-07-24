@@ -3,6 +3,7 @@ import BoxComponent from '@/components/BoxComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import router from '@/router';
 import AuthService from '@/services/auth-service';
+import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { saveAccessToken } from '@/utils/local-storage-utils';
 import { getError, isValidEmail } from '@/utils/utils';
@@ -13,7 +14,7 @@ const password = ref('');
 const error = ref('');
 const isLoading = ref(false);
 
-function login(): void {
+async function login(): Promise<void> {
   error.value = '';
   if (!email.value || !password.value) {
     error.value = 'Preencha o campo.';
@@ -23,7 +24,7 @@ function login(): void {
     error.value = 'email inválido.';
     return;
   }
-  asyncLogin();
+  await asyncLogin();
 }
 
 async function asyncLogin(): Promise<void> {
@@ -31,7 +32,21 @@ async function asyncLogin(): Promise<void> {
   try {
     const accessToken = await AuthService.login(email.value, password.value);
     saveAccessToken(accessToken);
-    router.push({ name: 'create-character', query: { access: 'true' } });
+    await asyncGetMe();
+  } catch (e) {
+    error.value = getError(e);
+    isLoading.value = false;
+  }
+}
+
+async function asyncGetMe(): Promise<void> {
+  try {
+    const response = await UserService.getMe();
+    if (!response.userCharacter.name) {
+      router.push({ name: 'create-character', query: { access: 'true' } });
+      return;
+    }
+    router.push('/general');
   } catch (e) {
     error.value = getError(e);
     isLoading.value = false;

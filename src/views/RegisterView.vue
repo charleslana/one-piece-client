@@ -14,14 +14,14 @@ const isAlert = ref(false);
 const isSuccess = ref(false);
 const isLoading = ref(false);
 
-function register(): void {
+async function register(): Promise<void> {
   clearMessages();
   validate();
   if (messages.value.length !== 0) {
     showAlert();
     return;
   }
-  asyncRegister();
+  await asyncRegister();
 }
 
 function clearMessages(): void {
