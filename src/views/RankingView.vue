@@ -9,7 +9,7 @@ interface Ranking {
   name: string;
   breed: string;
   battlePoint: number;
-  avatarId: number;
+  avatar: string;
   guildTag: string;
 }
 
@@ -19,7 +19,7 @@ const rankingList: Ranking[] = [
     name: 'Nome personagem',
     breed: 'Humano',
     battlePoint: 8910065,
-    avatarId: 1,
+    avatar: '1',
     guildTag: 'TAG'
   }
 ];
@@ -73,11 +73,7 @@ const duplicatedArray = Array.from({ length: 20 }, () => [...rankingList]);
               <td class="middle">{{ formatNumber(8910065) }}</td>
               <td class="middle">
                 <figure class="image is-96x96 mx-auto">
-                  <img
-                    :src="getAvatarMini(ranking.avatarId)"
-                    alt="Avatar image"
-                    class="is-rounded"
-                  />
+                  <img :src="getAvatarMini(ranking.avatar)" alt="Avatar image" class="is-rounded" />
                 </figure>
               </td>
             </tr>

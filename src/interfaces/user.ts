@@ -1,4 +1,7 @@
-import type { UserCharacter } from './user-character';
+import type { Breed } from '@/enums/breed';
+import type { CharacterClass } from '@/enums/character-class';
+import type { Faction } from '@/enums/faction';
+import type { Sea } from '@/enums/sea';
 
 export interface CreateUser {
   email: string;
@@ -6,5 +9,29 @@ export interface CreateUser {
 }
 
 export interface User {
-  userCharacter: UserCharacter;
+  name: string | null;
+  faction: Faction | null;
+  sea: Sea | null;
+  breed: Breed | null;
+  characterClass: CharacterClass;
+  level: number;
+  coin: number;
+  gold: number;
+  exp: number;
+  stamina: number;
+  victoryPve: number;
+  defeatPve: number;
+  victoryPvp: number;
+  defeatPvp: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUser {
+  name: string;
+  faction: Faction;
+  sea: Sea;
+  breed: Breed;
+  characterClass: CharacterClass;
+  avatarId: number;
 }

@@ -41,7 +41,7 @@ function validate(): void {
     addMessage('Preencha os campos.');
   }
   if (!isValidEmail(email.value)) {
-    addMessage('E-mail inválido.');
+    addMessage('E-mail inválido, cerifique-se que o email seja valido e minúsculo.');
   }
   if (password.value.length < 6) {
     addMessage('A senha deve conter no mínimo 6 caracteres.');

@@ -21,8 +21,8 @@ const statusList = [
 ];
 
 const topGeneral = [
-  { name: 'Nome', avatar: 1, battlePower: 8845215, guildTag: 'TAG' },
-  { name: 'Nome2', avatar: 2, battlePower: 8845215, guildTag: '' }
+  { name: 'Nome', avatar: '1', battlePower: 8845215, guildTag: 'TAG' },
+  { name: 'Nome2', avatar: '2', battlePower: 8845215, guildTag: '' }
 ];
 const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
 </script>
@@ -44,7 +44,7 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
         <div class="column is-4">
           <CardComponent title="Nome">
             <template #content>
-              <img :src="getAvatar(1)" alt="Avatar icon" />
+              <img :src="getAvatar('1')" alt="Avatar icon" />
             </template>
           </CardComponent>
         </div>
@@ -148,7 +148,7 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
                     <tr class="has-text-centered">
                       <td class="middle">
                         <figure class="image is-48x48">
-                          <img :src="getAvatarMini(1)" alt="Avatar image" class="is-rounded" />
+                          <img :src="getAvatarMini('1')" alt="Avatar image" class="is-rounded" />
                         </figure>
                       </td>
                       <td class="middle">[TAG] Nome</td>

@@ -67,7 +67,7 @@ async function changeType(type: 'on' | 'off' | 'none'): Promise<void> {
 async function asyncGetMe(): Promise<void> {
   try {
     const response = await UserService.getMe();
-    if (!response.userCharacter.name) {
+    if (!response.name) {
       router.push({ name: 'create-character', query: { access: 'true' } });
       return;
     }

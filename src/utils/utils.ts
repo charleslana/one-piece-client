@@ -2,7 +2,7 @@ import type ResponseApi from '@/interfaces/response-api';
 import type { AxiosError } from 'axios';
 
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
   return emailRegex.test(email);
 }
 

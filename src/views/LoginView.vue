@@ -32,17 +32,17 @@ async function asyncLogin(): Promise<void> {
   try {
     const accessToken = await AuthService.login(email.value, password.value);
     saveAccessToken(accessToken);
-    await asyncGetMe();
+    await asyncGetUserCharacter();
   } catch (e) {
     error.value = getError(e);
     isLoading.value = false;
   }
 }
 
-async function asyncGetMe(): Promise<void> {
+async function asyncGetUserCharacter(): Promise<void> {
   try {
     const response = await UserService.getMe();
-    if (!response.userCharacter.name) {
+    if (!response.name) {
       router.push({ name: 'create-character', query: { access: 'true' } });
       return;
     }

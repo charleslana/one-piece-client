@@ -4,24 +4,31 @@ import { Breed } from '@/enums/breed';
 import { CharacterClass } from '@/enums/character-class';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
+import type { Avatar } from '@/interfaces/avatar';
 import router from '@/router';
-import UserCharacterService from '@/services/user-character-service';
+import AvatarService from '@/services/avatar-service';
+import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
+import { getBreed, getFaction } from '@/utils/user-character-utils';
 import { getError, isValidName } from '@/utils/utils';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const name = ref('');
 const faction = ref<Faction>(Faction.Pirate);
 const sea = ref<Sea>(Sea.NorthBlue);
 const breed = ref<Breed>(Breed.Human);
 const characterClass = ref<CharacterClass>(CharacterClass.Swordsman);
-const avatarId = ref<number>();
-const avatars = ref<number[]>([1, 2, 3, 4, 5]);
+const selectedAvatar = ref<Avatar>({ id: 0, image: '0', selected: false });
+const avatars = ref<Avatar[]>([]);
 const error = ref('');
 const isLoading = ref(false);
 const isSuccess = ref(false);
 const type = ref<'none' | 'on' | 'off'>('none');
+
+onMounted(() => {
+  asyncGetMe();
+});
 
 async function createCharacter(): Promise<void> {
   error.value = '';
@@ -43,12 +50,13 @@ function logout(): void {
 async function asyncCreateCharacter(): Promise<void> {
   isLoading.value = true;
   try {
-    await UserCharacterService.updateUserCharacter({
+    await UserService.updateUser({
       name: name.value,
       faction: faction.value,
       sea: sea.value,
       breed: breed.value,
-      class: characterClass.value
+      characterClass: characterClass.value,
+      avatarId: selectedAvatar.value.id
     });
     isSuccess.value = true;
     type.value = 'on';
@@ -56,6 +64,31 @@ async function asyncCreateCharacter(): Promise<void> {
     error.value = getError(e);
   } finally {
     isLoading.value = false;
+  }
+}
+
+async function asyncGetAvatars(): Promise<void> {
+  isLoading.value = true;
+  try {
+    const response = await AvatarService.getAll();
+    avatars.value = response;
+  } catch (e) {
+    error.value = getError(e);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+async function asyncGetMe(): Promise<void> {
+  try {
+    const response = await UserService.getMe();
+    if (response.name) {
+      router.push('/general');
+      return;
+    }
+    await asyncGetAvatars();
+  } catch (e) {
+    // console.log(e);
   }
 }
 </script>
@@ -158,11 +191,11 @@ async function asyncCreateCharacter(): Promise<void> {
                     :key="index"
                   >
                     <img
-                      :src="getAvatarMini(avatar)"
+                      :src="getAvatarMini(avatar.image)"
                       class="image-size"
                       alt="Avatar icon"
-                      :class="{ 'avatar-selected': avatarId === avatar }"
-                      @click="avatarId = avatar"
+                      :class="{ 'avatar-selected': selectedAvatar.id === avatar.id }"
+                      @click="selectedAvatar = avatar"
                     />
                   </div>
                 </div>
@@ -170,10 +203,10 @@ async function asyncCreateCharacter(): Promise<void> {
             </div>
             <div class="column is-6">
               <img
-                :src="getAvatar(avatarId)"
+                :src="getAvatar(selectedAvatar.image)"
                 alt="Avatar image"
                 class="avatar-selected-image"
-                v-if="avatarId"
+                v-if="selectedAvatar.id"
               />
             </div>
           </div>
@@ -183,7 +216,7 @@ async function asyncCreateCharacter(): Promise<void> {
                 type="submit"
                 class="button btn btn-warning"
                 :class="{ 'is-loading': isLoading }"
-                :disabled="isLoading || !avatarId"
+                :disabled="isLoading || !selectedAvatar.id"
               >
                 Confirmar
               </button>
@@ -203,11 +236,11 @@ async function asyncCreateCharacter(): Promise<void> {
         </form>
       </section>
       <section v-else>
-        <TitleComponent :title="`${name} (${faction})`" />
+        <TitleComponent :title="`${name} (${getFaction(faction)})`" />
         <p>
-          Você é um {{ breed }} que desde pequeno quer se tornar o mais forte entre todos. Com o
-          passar dos anos se destacou entre os aventureiros comuns e começou a perceber que era
-          diferente, reconhecendo que possuía uma força interna elevada. Após pesquisar muito
+          Você é um {{ getBreed(breed) }} que desde pequeno quer se tornar o mais forte entre todos.
+          Com o passar dos anos se destacou entre os aventureiros comuns e começou a perceber que
+          era diferente, reconhecendo que possuía uma força interna elevada. Após pesquisar muito
           descobriu que essa força se chama 'Haki', e está presente em todos seres vivos, e com
           treinamento pode aprender a usar esse haki para várias funções. Com isso em mente você
           parte em uma jornada pelo mundo, para evoluir seu poder e conhecimentos.
