@@ -1,6 +1,6 @@
 import images from '@/data/image';
 
-export function getAvatar(id: string): string {
+export function getAvatar(id: string | null): string {
   switch (id) {
     case '1':
       return images.imageAvatar1;
@@ -17,7 +17,7 @@ export function getAvatar(id: string): string {
   }
 }
 
-export function getAvatarMini(id: string): string {
+export function getAvatarMini(id: string | null): string {
   switch (id) {
     case '1':
       return images.imageAvatar1Mini;

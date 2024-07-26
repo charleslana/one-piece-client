@@ -308,3 +308,8 @@ strong {
 .is-link {
   background-color: #337ab7 !important;
 }
+
+.is-current {
+  background-color: #ec971f !important;
+  border-color: #d58512 !important;
+}

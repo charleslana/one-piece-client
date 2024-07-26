@@ -2,6 +2,7 @@ import type { Breed } from '@/enums/breed';
 import type { CharacterClass } from '@/enums/character-class';
 import type { Faction } from '@/enums/faction';
 import type { Sea } from '@/enums/sea';
+import type { Page } from './page';
 
 export interface CreateUser {
   email: string;
@@ -25,6 +26,8 @@ export interface User {
   defeatPvp: number;
   createdAt: string;
   updatedAt: string;
+  guildTag: string | null;
+  avatar: string | null;
 }
 
 export interface UpdateUser {
@@ -34,4 +37,8 @@ export interface UpdateUser {
   breed: Breed;
   characterClass: CharacterClass;
   avatarId: number;
+}
+
+export interface UserFilter extends Page {
+  name?: string;
 }

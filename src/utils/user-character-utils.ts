@@ -3,7 +3,7 @@ import { CharacterClass } from '@/enums/character-class';
 import { Faction } from '@/enums/faction';
 import { Sea } from '@/enums/sea';
 
-export function getFaction(faction: Faction): string {
+export function getFaction(faction: Faction | null): string {
   switch (faction) {
     case Faction.Pirate:
       return 'Pirata';
@@ -16,7 +16,7 @@ export function getFaction(faction: Faction): string {
   }
 }
 
-export function getSea(sea: Sea): string {
+export function getSea(sea: Sea | null): string {
   switch (sea) {
     case Sea.NorthBlue:
       return 'North Blue';
@@ -31,7 +31,7 @@ export function getSea(sea: Sea): string {
   }
 }
 
-export function getBreed(breed: Breed): string {
+export function getBreed(breed: Breed | null): string {
   switch (breed) {
     case Breed.Human:
       return 'Humano';
@@ -48,7 +48,7 @@ export function getBreed(breed: Breed): string {
   }
 }
 
-export function getCharacterClass(characterClass: CharacterClass): string {
+export function getCharacterClass(characterClass: CharacterClass | null): string {
   switch (characterClass) {
     case CharacterClass.Swordsman:
       return 'Espadachim';

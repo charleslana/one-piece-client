@@ -1,30 +1,96 @@
 <script setup lang="ts">
 import TitleComponent from '@/components/TitleComponent.vue';
+import type ResultPaginated from '@/interfaces/result-paginated';
+import type { User } from '@/interfaces/user';
+import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatarMini } from '@/utils/avatar-utils';
+import { getBreed } from '@/utils/user-character-utils';
 import { formatNumber } from '@/utils/utils';
+import { computed, onMounted, ref } from 'vue';
 
-interface Ranking {
-  id: number;
-  name: string;
-  breed: string;
-  battlePoint: number;
-  avatar: string;
-  guildTag: string;
+onMounted(() => {
+  asyncFilterUsers();
+});
+
+const rankingList = ref<ResultPaginated<User>>({
+  results: [],
+  pagination: {
+    currentPage: 0,
+    hasNextPage: false,
+    totalCount: 0,
+    totalPages: 0
+  }
+});
+const page = ref(1);
+const isLoading = ref(false);
+
+const getNextButtonAttributes = computed(() => {
+  if (!rankingList.value.pagination.hasNextPage || isLoading.value) {
+    return {
+      disabled: true
+    };
+  }
+  return {
+    disabled: undefined
+  };
+});
+
+const getPreviousButtonAttributes = computed(() => {
+  if (rankingList.value.pagination.currentPage === 1 || isLoading.value) {
+    return {
+      disabled: true
+    };
+  }
+  return {
+    disabled: undefined
+  };
+});
+
+const displayedPages = computed(() => {
+  const startPage = Math.max(rankingList.value.pagination.currentPage - 3, 1);
+  const endPage = Math.min(
+    rankingList.value.pagination.currentPage + 3,
+    rankingList.value.pagination.totalPages
+  );
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+});
+
+async function asyncFilterUsers(): Promise<void> {
+  isLoading.value = true;
+  try {
+    const response = await UserService.filterPaginated({ page: page.value });
+    rankingList.value = response;
+  } catch (e) {
+    // console.log(e);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
-const rankingList: Ranking[] = [
-  {
-    id: 1,
-    name: 'Nome personagem',
-    breed: 'Humano',
-    battlePoint: 8910065,
-    avatar: '1',
-    guildTag: 'TAG'
+async function previousPage(): Promise<void> {
+  if (rankingList.value.pagination.currentPage > 1) {
+    rankingList.value.pagination.currentPage--;
+    page.value = rankingList.value.pagination.currentPage;
+    await asyncFilterUsers();
   }
-];
+}
 
-const duplicatedArray = Array.from({ length: 20 }, () => [...rankingList]);
+async function nextPage(): Promise<void> {
+  if (rankingList.value.pagination.currentPage < rankingList.value.pagination.totalPages) {
+    rankingList.value.pagination.currentPage++;
+    page.value = rankingList.value.pagination.currentPage;
+    await asyncFilterUsers();
+  }
+}
+
+async function gotoPage(pg: number): Promise<void> {
+  if (pg != rankingList.value.pagination.currentPage) {
+    rankingList.value.pagination.currentPage = pg;
+    page.value = rankingList.value.pagination.currentPage;
+    await asyncFilterUsers();
+  }
+}
 </script>
 
 <template>
@@ -62,14 +128,14 @@ const duplicatedArray = Array.from({ length: 20 }, () => [...rankingList]);
           <tbody>
             <tr
               class="has-text-centered has-text-weight-bold"
-              v-for="(ranking, index) in duplicatedArray.flat()"
+              v-for="(ranking, index) in rankingList.results"
               :key="index"
             >
               <td class="middle">{{ index + 1 }}</td>
               <td class="middle">
                 {{ ranking.guildTag ? `[${ranking.guildTag}]` : '' }} {{ ranking.name }}
               </td>
-              <td class="middle">{{ ranking.breed }}</td>
+              <td class="middle">{{ getBreed(ranking.breed) }}</td>
               <td class="middle">{{ formatNumber(8910065) }}</td>
               <td class="middle">
                 <figure class="image is-96x96 mx-auto">
@@ -81,12 +147,32 @@ const duplicatedArray = Array.from({ length: 20 }, () => [...rankingList]);
         </table>
       </div>
       <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-        <button class="pagination-previous btn btn-warning">Anterior</button>
-        <button class="pagination-next btn btn-warning">Próximo</button>
+        <button
+          class="pagination-previous button btn btn-warning"
+          :class="{ 'is-loading': isLoading }"
+          @click="previousPage"
+          v-bind="getPreviousButtonAttributes"
+        >
+          Anterior
+        </button>
+        <button
+          class="pagination-next button btn btn-warning"
+          @click="nextPage"
+          :class="{ 'is-loading': isLoading }"
+          v-bind="getNextButtonAttributes"
+        >
+          Próximo
+        </button>
         <ul class="pagination-list">
-          <li><button class="pagination-link btn btn-warning">1</button></li>
-          <li><button class="pagination-link btn btn-warning">2</button></li>
-          <li><button class="pagination-link btn btn-warning">3</button></li>
+          <li v-for="displayedPage in displayedPages" :key="displayedPage">
+            <button
+              class="pagination-link button btn btn-warning"
+              :class="[{ 'is-loading': isLoading }, { 'is-current': displayedPage === page }]"
+              @click="gotoPage(displayedPage)"
+            >
+              {{ displayedPage }}
+            </button>
+          </li>
         </ul>
       </nav>
     </template>
