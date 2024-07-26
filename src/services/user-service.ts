@@ -20,7 +20,7 @@ export default class UserService {
 
   static async filterPaginated(filter: UserFilter): Promise<ResultPaginated<User>> {
     const response = await api.post<ResultPaginated<User>>(
-      `${this.baseUrl}/filter?page=${filter.page}&pageSize=1`,
+      `${this.baseUrl}/filter?page=${filter.page}&pageSize=20`,
       filter
     );
     return response.data;
