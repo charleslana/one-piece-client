@@ -1,6 +1,13 @@
 import api from '@/config/api';
 import type ResultPaginated from '@/interfaces/result-paginated';
-import type { CreateUser, UpdateUser, User, UserFilter, UserTopByFaction } from '@/interfaces/user';
+import type {
+  CreateUser,
+  UpdateUser,
+  User,
+  UserFilter,
+  UserTopByCharacterClass,
+  UserTopByFaction
+} from '@/interfaces/user';
 
 export default class UserService {
   private static baseUrl = '/user';
@@ -28,6 +35,13 @@ export default class UserService {
 
   static async getTopByFaction(): Promise<UserTopByFaction> {
     const response = await api.get<UserTopByFaction>(`${this.baseUrl}/top-by-faction`);
+    return response.data;
+  }
+
+  static async getTopByCharacterClass(): Promise<UserTopByCharacterClass> {
+    const response = await api.get<UserTopByCharacterClass>(
+      `${this.baseUrl}/top-by-character-class`
+    );
     return response.data;
   }
 }

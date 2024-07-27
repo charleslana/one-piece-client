@@ -19,6 +19,7 @@ interface StatusItem {
 onMounted(async () => {
   await asyncGetMe();
   await asyncGetTopByFaction();
+  await asyncGetTopByCharacterClass();
 });
 
 const statusList = ref<StatusItem[]>([
@@ -44,6 +45,9 @@ const user = ref<User>();
 const pirateUsers = ref<User[]>([]);
 const marineUsers = ref<User[]>([]);
 const revolutionaryUsers = ref<User[]>([]);
+const swordsmanUsers = ref<User[]>([]);
+const shooterUsers = ref<User[]>([]);
+const fighterUsers = ref<User[]>([]);
 
 async function asyncGetMe(): Promise<void> {
   try {
@@ -87,6 +91,17 @@ async function asyncGetTopByFaction(): Promise<void> {
     pirateUsers.value = response.pirate;
     marineUsers.value = response.marine;
     revolutionaryUsers.value = response.revolutionary;
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+async function asyncGetTopByCharacterClass(): Promise<void> {
+  try {
+    const response = await UserService.getTopByCharacterClass();
+    swordsmanUsers.value = response.swordsman;
+    shooterUsers.value = response.shooter;
+    fighterUsers.value = response.fighter;
   } catch (e) {
     // console.log(e);
   }
@@ -213,6 +228,100 @@ async function asyncGetTopByFaction(): Promise<void> {
                       v-for="(top, index) in revolutionaryUsers"
                       :key="index"
                     >
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+          </CardComponent>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-4">
+          <CardComponent
+            title="Top 10 Espadachins"
+            footer-name="Ver Ranking"
+            footer-link="/ranking"
+          >
+            <template #content>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr
+                      class="has-text-centered"
+                      v-for="(top, index) in swordsmanUsers"
+                      :key="index"
+                    >
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+          </CardComponent>
+        </div>
+        <div class="column is-4">
+          <CardComponent title="Top 10 Atiradores" footer-name="Ver Ranking" footer-link="/ranking">
+            <template #content>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr class="has-text-centered" v-for="(top, index) in shooterUsers" :key="index">
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+          </CardComponent>
+        </div>
+        <div class="column is-4">
+          <CardComponent title="Top 10 Lutadores" footer-name="Ver Ranking" footer-link="/ranking">
+            <template #content>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr class="has-text-centered" v-for="(top, index) in fighterUsers" :key="index">
                       <td class="middle">{{ index + 1 }}</td>
                       <td class="middle">
                         <figure class="image is-48x48">

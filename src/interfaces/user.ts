@@ -51,3 +51,9 @@ export interface UserTopByFaction {
   marine: User[];
   revolutionary: User[];
 }
+
+export interface UserTopByCharacterClass {
+  swordsman: User[];
+  shooter: User[];
+  fighter: User[];
+}
