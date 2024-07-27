@@ -27,8 +27,8 @@ const isLoading = ref(false);
 const isSuccess = ref(false);
 const type = ref<'none' | 'on' | 'off'>('none');
 
-onMounted(async () => {
-  await checkCharacterCompleted();
+onMounted(() => {
+  checkCharacterCompleted();
 });
 
 async function createCharacter(): Promise<void> {

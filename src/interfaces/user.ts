@@ -31,6 +31,7 @@ export interface User {
   avatar: string | null;
   attribute: UserAttribute;
   battlePower: number;
+  consecutiveVictory: number;
 }
 
 export interface UpdateUser {

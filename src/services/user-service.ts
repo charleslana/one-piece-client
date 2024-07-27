@@ -44,4 +44,14 @@ export default class UserService {
     );
     return response.data;
   }
+
+  static async getTopByConsecutiveVictory(): Promise<User> {
+    const response = await api.get<User>(`${this.baseUrl}/top-by-consecutive-victory`);
+    return response.data;
+  }
+
+  static async getTopThreeByCoin(): Promise<User[]> {
+    const response = await api.get<User[]>(`${this.baseUrl}/top-three-by-coin`);
+    return response.data;
+  }
 }

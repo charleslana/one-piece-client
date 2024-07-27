@@ -16,10 +16,12 @@ interface StatusItem {
   value: string | number;
 }
 
-onMounted(async () => {
-  await asyncGetMe();
-  await asyncGetTopByFaction();
-  await asyncGetTopByCharacterClass();
+onMounted(() => {
+  asyncGetMe();
+  asyncGetTopByFaction();
+  asyncGetTopByCharacterClass();
+  asyncGetTopByConsecutiveVictory();
+  asyncGetTopThreeByCoin();
 });
 
 const statusList = ref<StatusItem[]>([
@@ -35,12 +37,6 @@ const statusList = ref<StatusItem[]>([
   { name: 'Energia', icon: ['fas', 'bolt'], value: 25 },
   { name: 'Stamina', icon: ['fas', 'battery-full'], value: '100%' }
 ]);
-
-const topGeneral = [
-  { name: 'Nome', avatar: '1', battlePower: 8845215, guildTag: 'TAG' },
-  { name: 'Nome2', avatar: '2', battlePower: 8845215, guildTag: '' }
-];
-
 const user = ref<User>();
 const pirateUsers = ref<User[]>([]);
 const marineUsers = ref<User[]>([]);
@@ -48,6 +44,8 @@ const revolutionaryUsers = ref<User[]>([]);
 const swordsmanUsers = ref<User[]>([]);
 const shooterUsers = ref<User[]>([]);
 const fighterUsers = ref<User[]>([]);
+const userConsecutiveVictory = ref<User>();
+const usersCoin = ref<User[]>([]);
 
 async function asyncGetMe(): Promise<void> {
   try {
@@ -102,6 +100,24 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
     swordsmanUsers.value = response.swordsman;
     shooterUsers.value = response.shooter;
     fighterUsers.value = response.fighter;
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+async function asyncGetTopByConsecutiveVictory(): Promise<void> {
+  try {
+    const response = await UserService.getTopByConsecutiveVictory();
+    userConsecutiveVictory.value = response;
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+async function asyncGetTopThreeByCoin(): Promise<void> {
+  try {
+    const response = await UserService.getTopThreeByCoin();
+    usersCoin.value = response;
   } catch (e) {
     // console.log(e);
   }
@@ -347,7 +363,7 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
       <div class="columns">
         <div class="column is-4">
           <CardComponent title="O vitorioso">
-            <template #content>
+            <template #content v-if="userConsecutiveVictory">
               <div class="table-container">
                 <table class="table mx-auto is-striped is-fullwidth is-hoverable">
                   <tbody>
@@ -357,8 +373,17 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
                           <img :src="getAvatarMini('1')" alt="Avatar image" class="is-rounded" />
                         </figure>
                       </td>
-                      <td class="middle">[TAG] Nome</td>
-                      <td class="middle">Vitórias Seguidas: 394</td>
+                      <td class="middle">
+                        {{
+                          userConsecutiveVictory.guildTag
+                            ? `[${userConsecutiveVictory.guildTag}]`
+                            : ''
+                        }}
+                        {{ userConsecutiveVictory.name }}
+                      </td>
+                      <td class="middle">
+                        Vitórias Seguidas: {{ userConsecutiveVictory.consecutiveVictory }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -370,7 +395,7 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
               <div class="table-container">
                 <table class="table mx-auto is-striped is-fullwidth is-hoverable">
                   <tbody>
-                    <tr class="has-text-centered" v-for="(top, index) in topGeneral" :key="index">
+                    <tr class="has-text-centered" v-for="(top, index) in usersCoin" :key="index">
                       <td class="middle">{{ index + 1 }}</td>
                       <td class="middle">
                         <figure class="image is-48x48">
@@ -384,7 +409,7 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
                       <td class="middle">
                         {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
                       </td>
-                      <td class="middle">Berries: {{ formatNumber(top.battlePower) }}</td>
+                      <td class="middle">Berries: {{ formatNumber(top.coin) }}</td>
                     </tr>
                   </tbody>
                 </table>
