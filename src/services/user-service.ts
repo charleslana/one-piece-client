@@ -1,6 +1,6 @@
 import api from '@/config/api';
 import type ResultPaginated from '@/interfaces/result-paginated';
-import type { CreateUser, UpdateUser, User, UserFilter } from '@/interfaces/user';
+import type { CreateUser, UpdateUser, User, UserFilter, UserTopByFaction } from '@/interfaces/user';
 
 export default class UserService {
   private static baseUrl = '/user';
@@ -10,7 +10,7 @@ export default class UserService {
   }
 
   static async getMe(): Promise<User> {
-    const response = await api.get<User>(`${this.baseUrl}/profile/me`);
+    const response = await api.get<User>(`${this.baseUrl}/me`);
     return response.data;
   }
 
@@ -23,6 +23,11 @@ export default class UserService {
       `${this.baseUrl}/filter?page=${filter.page}&pageSize=20`,
       filter
     );
+    return response.data;
+  }
+
+  static async getTopByFaction(): Promise<UserTopByFaction> {
+    const response = await api.get<UserTopByFaction>(`${this.baseUrl}/top-by-faction`);
     return response.data;
   }
 }

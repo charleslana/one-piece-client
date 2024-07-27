@@ -45,3 +45,9 @@ export interface UpdateUser {
 export interface UserFilter extends Page {
   name?: string;
 }
+
+export interface UserTopByFaction {
+  pirate: User[];
+  marine: User[];
+  revolutionary: User[];
+}

@@ -16,8 +16,9 @@ interface StatusItem {
   value: string | number;
 }
 
-onMounted(() => {
-  asyncGetMe();
+onMounted(async () => {
+  await asyncGetMe();
+  await asyncGetTopByFaction();
 });
 
 const statusList = ref<StatusItem[]>([
@@ -38,8 +39,11 @@ const topGeneral = [
   { name: 'Nome', avatar: '1', battlePower: 8845215, guildTag: 'TAG' },
   { name: 'Nome2', avatar: '2', battlePower: 8845215, guildTag: '' }
 ];
-const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
+
 const user = ref<User>();
+const pirateUsers = ref<User[]>([]);
+const marineUsers = ref<User[]>([]);
+const revolutionaryUsers = ref<User[]>([]);
 
 async function asyncGetMe(): Promise<void> {
   try {
@@ -74,6 +78,17 @@ function updateStatusList() {
       { name: 'Energia', icon: ['fas', 'bolt'], value: user.value.attribute.energy },
       { name: 'Stamina', icon: ['fas', 'battery-full'], value: `${user.value.stamina}%` }
     ];
+  }
+}
+
+async function asyncGetTopByFaction(): Promise<void> {
+  try {
+    const response = await UserService.getTopByFaction();
+    pirateUsers.value = response.pirate;
+    marineUsers.value = response.marine;
+    revolutionaryUsers.value = response.revolutionary;
+  } catch (e) {
+    // console.log(e);
   }
 }
 </script>
@@ -118,8 +133,8 @@ function updateStatusList() {
       <div class="columns">
         <div class="column is-4">
           <CardComponent
-            title="Top 10 personagens"
-            tooltip="Jogadores em Geral. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
+            title="Top 10 Piratas"
+            tooltip="Jogadores da facção Pirata. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
             footer-name="Ver Ranking"
             footer-link="/ranking"
           >
@@ -127,11 +142,7 @@ function updateStatusList() {
               <div class="table-container">
                 <table class="table mx-auto is-striped is-fullwidth is-hoverable">
                   <tbody>
-                    <tr
-                      class="has-text-centered"
-                      v-for="(top, index) in duplicatedArray.flat()"
-                      :key="index"
-                    >
+                    <tr class="has-text-centered" v-for="(top, index) in pirateUsers" :key="index">
                       <td class="middle">{{ index + 1 }}</td>
                       <td class="middle">
                         <figure class="image is-48x48">
@@ -155,8 +166,41 @@ function updateStatusList() {
         </div>
         <div class="column is-4">
           <CardComponent
-            title="Top 10 normais"
-            tooltip="Jogadores Normais sem conta VIP. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
+            title="Top 10 Marinheiros"
+            tooltip="Jogadores da facção Marinha. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
+            footer-name="Ver Ranking"
+            footer-link="/ranking"
+          >
+            <template #content>
+              <div class="table-container">
+                <table class="table mx-auto is-striped is-fullwidth is-hoverable">
+                  <tbody>
+                    <tr class="has-text-centered" v-for="(top, index) in marineUsers" :key="index">
+                      <td class="middle">{{ index + 1 }}</td>
+                      <td class="middle">
+                        <figure class="image is-48x48">
+                          <img
+                            :src="getAvatarMini(top.avatar)"
+                            alt="Avatar image"
+                            class="is-rounded"
+                          />
+                        </figure>
+                      </td>
+                      <td class="middle">
+                        {{ top.guildTag ? `[${top.guildTag}]` : '' }} {{ top.name }}
+                      </td>
+                      <td class="middle">PL: {{ formatNumber(top.battlePower) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
+          </CardComponent>
+        </div>
+        <div class="column is-4">
+          <CardComponent
+            title="Top 10 Revolucionários"
+            tooltip="Jogadores da facção Revolucionário. Todo dia 1 de cada mês o TOP desse rank vai ganhar 4 Gold."
             footer-name="Ver Ranking"
             footer-link="/ranking"
           >
@@ -166,7 +210,7 @@ function updateStatusList() {
                   <tbody>
                     <tr
                       class="has-text-centered"
-                      v-for="(top, index) in duplicatedArray.flat()"
+                      v-for="(top, index) in revolutionaryUsers"
                       :key="index"
                     >
                       <td class="middle">{{ index + 1 }}</td>
@@ -190,6 +234,8 @@ function updateStatusList() {
             </template>
           </CardComponent>
         </div>
+      </div>
+      <div class="columns">
         <div class="column is-4">
           <CardComponent title="O vitorioso">
             <template #content>

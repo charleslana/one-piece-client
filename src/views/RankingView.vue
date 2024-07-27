@@ -9,8 +9,8 @@ import { getBreed } from '@/utils/user-character-utils';
 import { formatNumber } from '@/utils/utils';
 import { computed, onMounted, ref } from 'vue';
 
-onMounted(() => {
-  asyncFilterUsers();
+onMounted(async () => {
+  await asyncFilterUsers();
 });
 
 const rankingList = ref<ResultPaginated<User>>({
