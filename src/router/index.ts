@@ -8,7 +8,11 @@ import RankingView from '@/views/RankingView.vue';
 import RecoveryPasswordView from '@/views/RecoveryPasswordView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { isAuthenticated, removeAccessToken } from '@/utils/local-storage-utils';
+import {
+  isAuthenticated,
+  removeAccessToken,
+  removeCharacterCompleted
+} from '@/utils/local-storage-utils';
 
 const BlankComponent = {
   template: '<div></div>'
@@ -83,6 +87,7 @@ const router = createRouter({
       name: 'logout',
       component: BlankComponent,
       beforeEnter: (_to, _from, next) => {
+        removeCharacterCompleted();
         removeAccessToken();
         next({ name: 'login' });
       }

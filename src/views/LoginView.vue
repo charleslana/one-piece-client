@@ -5,7 +5,7 @@ import router from '@/router';
 import AuthService from '@/services/auth-service';
 import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
-import { saveAccessToken } from '@/utils/local-storage-utils';
+import { saveAccessToken, saveCharacterCompleted } from '@/utils/local-storage-utils';
 import { getError, isValidEmail } from '@/utils/utils';
 import { ref } from 'vue';
 
@@ -47,6 +47,7 @@ async function asyncGetUserCharacter(): Promise<void> {
       return;
     }
     router.push('/general');
+    saveCharacterCompleted();
   } catch (e) {
     error.value = getError(e);
     isLoading.value = false;

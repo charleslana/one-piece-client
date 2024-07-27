@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import MenuComponent from './MenuComponent.vue';
-import UserService from '@/services/user-service';
 import router from '@/router';
+import { isCharacterCompleted } from '@/utils/local-storage-utils';
 
 const props = defineProps<{
   type: 'on' | 'off' | 'none';
@@ -57,22 +57,17 @@ async function changeType(type: 'on' | 'off' | 'none'): Promise<void> {
   if (type === 'on') {
     buttons.value = buttonOn.value;
     menuList.value = menuOn.value;
-    await asyncGetMe();
+    checkCharacterCompleted();
     return;
   }
   buttons.value = buttonOff.value;
   menuList.value = menuOff.value;
 }
 
-async function asyncGetMe(): Promise<void> {
-  try {
-    const response = await UserService.getMe();
-    if (!response.name) {
-      router.push({ name: 'create-character', query: { access: 'true' } });
-      return;
-    }
-  } catch (e) {
-    // console.log(e);
+function checkCharacterCompleted(): void {
+  if (!isCharacterCompleted()) {
+    router.push({ name: 'create-character', query: { access: 'true' } });
+    return;
   }
 }
 </script>

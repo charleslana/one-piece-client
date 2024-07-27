@@ -1,6 +1,10 @@
 import axios, { AxiosError } from 'axios';
 import router from '@/router';
-import { getAccessToken, removeAccessToken } from '@/utils/local-storage-utils';
+import {
+  getAccessToken,
+  removeAccessToken,
+  removeCharacterCompleted
+} from '@/utils/local-storage-utils';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL as string,
@@ -24,6 +28,7 @@ api.interceptors.response.use(
       const url = error!.config!.url;
       if (!url || !url.includes('auth/login')) {
         router.push('/login');
+        removeCharacterCompleted();
         removeAccessToken();
         return;
       }

@@ -2,34 +2,85 @@
 import CardComponent from '@/components/CardComponent.vue';
 import NewsComponent from '@/components/NewsComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
+import type { User } from '@/interfaces/user';
+import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
+import { getBreed, getCharacterClass, getFaction, getSea } from '@/utils/user-character-utils';
 import { formatNumber } from '@/utils/utils';
+import { onMounted, ref } from 'vue';
 
-const statusList = [
+interface StatusItem {
+  name: string;
+  icon: [string, string];
+  value: string | number;
+}
+
+onMounted(() => {
+  asyncGetMe();
+});
+
+const statusList = ref<StatusItem[]>([
   { name: 'Raça', icon: ['fas', 'user'], value: 'Humano' },
   { name: 'Facção', icon: ['fas', 'sitemap'], value: 'Pirata' },
   { name: 'Classe', icon: ['fas', 'user-tie'], value: 'Espadachim' },
   { name: 'Mar', icon: ['fas', 'water'], value: 'North Blue' },
-  { name: 'Power de Luta (PL)', icon: ['fas', 'universal-access'], value: formatNumber(130500) },
-  { name: 'Força', icon: ['fas', 'hand-fist'], value: '25' },
-  { name: 'Defesa', icon: ['fas', 'shield'], value: '25' },
-  { name: 'Agilidade', icon: ['fas', 'person-running'], value: '25' },
-  { name: 'Vitalidade', icon: ['fas', 'heart'], value: '25' },
-  { name: 'Energia', icon: ['fas', 'bolt'], value: '25' },
+  { name: 'Poder de Luta (PL)', icon: ['fas', 'universal-access'], value: formatNumber(130500) },
+  { name: 'Força', icon: ['fas', 'hand-fist'], value: 25 },
+  { name: 'Defesa', icon: ['fas', 'shield'], value: 25 },
+  { name: 'Agilidade', icon: ['fas', 'person-running'], value: 25 },
+  { name: 'Vitalidade', icon: ['fas', 'heart'], value: 25 },
+  { name: 'Energia', icon: ['fas', 'bolt'], value: 25 },
   { name: 'Stamina', icon: ['fas', 'battery-full'], value: '100%' }
-];
+]);
 
 const topGeneral = [
   { name: 'Nome', avatar: '1', battlePower: 8845215, guildTag: 'TAG' },
   { name: 'Nome2', avatar: '2', battlePower: 8845215, guildTag: '' }
 ];
 const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
+const user = ref<User>();
+
+async function asyncGetMe(): Promise<void> {
+  try {
+    const response = await UserService.getMe();
+    user.value = response;
+    updateStatusList();
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+function updateStatusList() {
+  if (user.value) {
+    statusList.value = [
+      { name: 'Raça', icon: ['fas', 'user'], value: getBreed(user.value.breed) },
+      { name: 'Facção', icon: ['fas', 'sitemap'], value: getFaction(user.value.faction) },
+      {
+        name: 'Classe',
+        icon: ['fas', 'user-tie'],
+        value: getCharacterClass(user.value.characterClass)
+      },
+      { name: 'Mar', icon: ['fas', 'water'], value: getSea(user.value.sea) },
+      {
+        name: 'Poder de Luta (PL)',
+        icon: ['fas', 'universal-access'],
+        value: formatNumber(user.value.battlePower)
+      },
+      { name: 'Força', icon: ['fas', 'hand-fist'], value: user.value.attribute.strength },
+      { name: 'Defesa', icon: ['fas', 'shield'], value: user.value.attribute.defense },
+      { name: 'Agilidade', icon: ['fas', 'person-running'], value: user.value.attribute.agility },
+      { name: 'Vitalidade', icon: ['fas', 'heart'], value: user.value.attribute.vitality },
+      { name: 'Energia', icon: ['fas', 'bolt'], value: user.value.attribute.energy },
+      { name: 'Stamina', icon: ['fas', 'battery-full'], value: `${user.value.stamina}%` }
+    ];
+  }
+}
 </script>
 
 <template>
   <PageTemplate type="on" bg="02">
-    <template #wrapper-container>
+    <template #wrapper-container v-if="user && user.name">
       <div class="level">
         <div class="level-left">
           <TitleComponent title="Bem vindo!" />
@@ -42,9 +93,9 @@ const duplicatedArray = Array.from({ length: 5 }, () => [...topGeneral]);
       </div>
       <div class="columns">
         <div class="column is-4">
-          <CardComponent title="Nome">
+          <CardComponent :title="user.name">
             <template #content>
-              <img :src="getAvatar('1')" alt="Avatar icon" />
+              <img :src="getAvatar(user.avatar)" alt="Avatar icon" />
             </template>
           </CardComponent>
         </div>

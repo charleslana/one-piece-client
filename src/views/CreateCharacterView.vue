@@ -10,6 +10,7 @@ import AvatarService from '@/services/avatar-service';
 import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
+import { isCharacterCompleted, saveCharacterCompleted } from '@/utils/local-storage-utils';
 import { getBreed, getFaction } from '@/utils/user-character-utils';
 import { getError, isValidName } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
@@ -27,7 +28,7 @@ const isSuccess = ref(false);
 const type = ref<'none' | 'on' | 'off'>('none');
 
 onMounted(() => {
-  asyncGetMe();
+  checkCharacterCompleted();
 });
 
 async function createCharacter(): Promise<void> {
@@ -60,6 +61,7 @@ async function asyncCreateCharacter(): Promise<void> {
     });
     isSuccess.value = true;
     type.value = 'on';
+    saveCharacterCompleted();
   } catch (e) {
     error.value = getError(e);
   } finally {
@@ -79,17 +81,12 @@ async function asyncGetAvatars(): Promise<void> {
   }
 }
 
-async function asyncGetMe(): Promise<void> {
-  try {
-    const response = await UserService.getMe();
-    if (response.name) {
-      router.push('/general');
-      return;
-    }
-    await asyncGetAvatars();
-  } catch (e) {
-    // console.log(e);
+async function checkCharacterCompleted(): Promise<void> {
+  if (isCharacterCompleted()) {
+    router.push('/general');
+    return;
   }
+  await asyncGetAvatars();
 }
 </script>
 
