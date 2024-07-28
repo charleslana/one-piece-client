@@ -9,6 +9,7 @@ import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
 import { getBreed, getCharacterClass, getFaction, getSea } from '@/utils/user-character-utils';
 import { formatNumber } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
+import { useUserStore } from '@/stores/user-store';
 
 interface StatusItem {
   name: string;
@@ -46,11 +47,13 @@ const shooterUsers = ref<User[]>([]);
 const fighterUsers = ref<User[]>([]);
 const userConsecutiveVictory = ref<User>();
 const usersCoin = ref<User[]>([]);
+const userStore = useUserStore();
 
 async function asyncGetMe(): Promise<void> {
   try {
     const response = await UserService.getMe();
     user.value = response;
+    userStore.setUserId(user.value.id);
     updateStatusList();
   } catch (e) {
     // console.log(e);

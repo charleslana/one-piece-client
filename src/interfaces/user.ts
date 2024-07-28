@@ -11,6 +11,7 @@ export interface CreateUser {
 }
 
 export interface User {
+  id: number;
   name: string | null;
   faction: Faction | null;
   sea: Sea | null;

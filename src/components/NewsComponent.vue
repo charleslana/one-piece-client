@@ -3,9 +3,12 @@ import CardComponent from '@/components/CardComponent.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
 import type { Newspaper } from '@/interfaces/newspaper';
+import type { CreateUserNewspaper, UserNewspaper } from '@/interfaces/user-newspaper';
 import NewspaperService from '@/services/newspaper-service';
 import { formatBreakLines, formatCompactNumber, formatFullDate } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
+import { useUserStore } from '@/stores/user-store';
+import UserNewspaperService from '@/services/user-newspaper-service';
 
 onMounted(() => {
   asyncGetAllNewspaper();
@@ -15,8 +18,9 @@ const isModal = ref(false);
 const newsTitle = ref();
 const newsMessage = ref();
 const newsDate = ref();
-
 const newsList = ref<Newspaper[]>([]);
+const userStore = useUserStore();
+const isLoading = ref(false);
 
 function showNewsInModal(news: Newspaper): void {
   newsTitle.value = news.title;
@@ -29,6 +33,101 @@ async function asyncGetAllNewspaper(): Promise<void> {
   try {
     const response = await NewspaperService.getAll();
     newsList.value = response;
+  } catch (e) {
+    // console.log(e);
+  }
+}
+
+function getLikes(allUserNewspapers: UserNewspaper[]): number {
+  const count = allUserNewspapers.filter((userNewspaper) => userNewspaper.like).length;
+  return count;
+}
+
+function getDislikes(allUserNewspapers: UserNewspaper[]): number {
+  const count = allUserNewspapers.filter((userNewspaper) => !userNewspaper.like).length;
+  return count;
+}
+
+function hasUserLiked(allUserNewspapers: UserNewspaper[]): boolean {
+  return allUserNewspapers.some(
+    (userNewspaper) => userNewspaper.userId === userStore.userId && userNewspaper.like
+  );
+}
+
+function hasUserDisliked(allUserNewspapers: UserNewspaper[]): boolean {
+  return allUserNewspapers.some(
+    (userNewspaper) => userNewspaper.userId === userStore.userId && !userNewspaper.like
+  );
+}
+
+function getUserNewspaper(
+  allUserNewspapers: UserNewspaper[],
+  newspaperId: number
+): UserNewspaper | undefined {
+  return allUserNewspapers.find(
+    (userNewspaper) =>
+      userNewspaper.newspaperId === newspaperId && userNewspaper.userId === userStore.userId
+  );
+}
+
+async function handleCreateUserNewspaper(
+  create: CreateUserNewspaper,
+  allUserNewspapers: UserNewspaper[]
+): Promise<void> {
+  isLoading.value = true;
+  if (create.like) {
+    await asyncHandleUserLiked(create, allUserNewspapers);
+  } else {
+    await asyncHandleUserDisliked(create, allUserNewspapers);
+  }
+  try {
+    await asyncGetAllNewspaper();
+  } catch (e) {
+    // console.log(e);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+async function asyncHandleUserLiked(
+  create: CreateUserNewspaper,
+  allUserNewspapers: UserNewspaper[]
+): Promise<void> {
+  if (hasUserLiked(allUserNewspapers)) {
+    await asyncDeleteUserNewspaper(create, allUserNewspapers);
+    return;
+  }
+  await asyncCreateUserNewspaper(create);
+}
+
+async function asyncHandleUserDisliked(
+  create: CreateUserNewspaper,
+  allUserNewspapers: UserNewspaper[]
+): Promise<void> {
+  if (hasUserDisliked(allUserNewspapers)) {
+    await asyncDeleteUserNewspaper(create, allUserNewspapers);
+    return;
+  }
+  await asyncCreateUserNewspaper(create);
+}
+
+async function asyncDeleteUserNewspaper(
+  create: CreateUserNewspaper,
+  allUserNewspapers: UserNewspaper[]
+): Promise<void> {
+  const userNewspaper = getUserNewspaper(allUserNewspapers, create.newspaperId);
+  if (userNewspaper) {
+    try {
+      await UserNewspaperService.exclude(userNewspaper.id);
+    } catch (e) {
+      // console.log(e);
+    }
+  }
+}
+
+async function asyncCreateUserNewspaper(create: CreateUserNewspaper): Promise<void> {
+  try {
+    await UserNewspaperService.create(create);
   } catch (e) {
     // console.log(e);
   }
@@ -47,13 +146,37 @@ async function asyncGetAllNewspaper(): Promise<void> {
           <div class="level">
             <div class="level-left">
               <div class="is-flex">
-                <div class="is-clickable has-text-weight-bold" :class="{ green: false }">
+                <div
+                  class="has-text-weight-bold"
+                  :class="[
+                    { green: hasUserLiked(news.usersNewspaper) },
+                    { 'is-not-clickable': isLoading, 'is-clickable': !isLoading }
+                  ]"
+                  @click="
+                    handleCreateUserNewspaper(
+                      { like: true, newspaperId: news.id },
+                      news.usersNewspaper
+                    )
+                  "
+                >
                   <font-awesome-icon :icon="['fas', 'thumbs-up']" />
-                  {{ formatCompactNumber(1) }}
+                  {{ formatCompactNumber(getLikes(news.usersNewspaper)) }}
                 </div>
-                <div class="ml-2 is-clickable has-text-weight-bold">
+                <div
+                  class="ml-2 has-text-weight-bold"
+                  :class="[
+                    { green: hasUserDisliked(news.usersNewspaper) },
+                    { 'is-not-clickable': isLoading, 'is-clickable': !isLoading }
+                  ]"
+                  @click="
+                    handleCreateUserNewspaper(
+                      { like: false, newspaperId: news.id },
+                      news.usersNewspaper
+                    )
+                  "
+                >
                   <font-awesome-icon :icon="['fas', 'thumbs-down']" />
-                  {{ formatCompactNumber(0) }}
+                  {{ formatCompactNumber(getDislikes(news.usersNewspaper)) }}
                 </div>
               </div>
             </div>
