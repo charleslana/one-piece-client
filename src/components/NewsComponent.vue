@@ -2,61 +2,35 @@
 import CardComponent from '@/components/CardComponent.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
 import TitleComponent from '@/components/TitleComponent.vue';
-import { formatCompactNumber, formatFullDate } from '@/utils/utils';
-import { ref } from 'vue';
+import type { Newspaper } from '@/interfaces/newspaper';
+import NewspaperService from '@/services/newspaper-service';
+import { formatBreakLines, formatCompactNumber, formatFullDate } from '@/utils/utils';
+import { onMounted, ref } from 'vue';
+
+onMounted(() => {
+  asyncGetAllNewspaper();
+});
 
 const isModal = ref(false);
 const newsTitle = ref();
 const newsMessage = ref();
 const newsDate = ref();
 
-const newsList = [
-  {
-    id: 1,
-    title: 'Nova Atualização de Sistema',
-    date: '2024-07-19 14:51',
-    content: 'Boa tarde, estamos refazendo o projeto para melhor atender nossos usuários.',
-    likes: 1,
-    dislikes: 2,
-    hasLiked: true
-  },
-  {
-    id: 2,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 5,
-    dislikes: 0
-  },
-  {
-    id: 3,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 99999,
-    dislikes: 9998
-  },
-  {
-    id: 4,
-    title: 'Anúncio Importante',
-    date: '2024-07-19 09:30',
-    content: 'Estamos lançando novas funcionalidades para melhorar a experiência do usuário.',
-    likes: 0,
-    dislikes: 0
-  }
-];
+const newsList = ref<Newspaper[]>([]);
 
-function findNewsById(id: number) {
-  return newsList.find((news) => news.id === id);
+function showNewsInModal(news: Newspaper): void {
+  newsTitle.value = news.title;
+  newsMessage.value = news.description;
+  newsDate.value = formatFullDate(new Date(news.createdAt));
+  isModal.value = true;
 }
 
-function showNewsInModal(id: number): void {
-  const news = findNewsById(id);
-  if (news) {
-    newsTitle.value = news.title;
-    newsMessage.value = news.content;
-    newsDate.value = formatFullDate(new Date(news.date));
-    isModal.value = true;
+async function asyncGetAllNewspaper(): Promise<void> {
+  try {
+    const response = await NewspaperService.getAll();
+    newsList.value = response;
+  } catch (e) {
+    // console.log(e);
   }
 }
 </script>
@@ -67,24 +41,24 @@ function showNewsInModal(id: number): void {
       <section v-for="(news, index) in newsList" :key="index" class="mb-4">
         <div class="font-luck is-size-5">{{ news.title }}</div>
         <font-awesome-icon :icon="['far', 'clock']" class="mr-2" />
-        <span class="font-press2p is-size-8">{{ formatFullDate(new Date(news.date)) }}</span>
+        <span class="font-press2p is-size-8">{{ formatFullDate(new Date(news.createdAt)) }}</span>
         <div class="box news-box">
-          <p class="font-press2p is-size-7 max-news-box">{{ news.content }}</p>
+          <p class="font-press2p is-size-7 max-news-box">{{ news.description }}</p>
           <div class="level">
             <div class="level-left">
               <div class="is-flex">
-                <div class="is-clickable has-text-weight-bold" :class="{ green: news.hasLiked }">
+                <div class="is-clickable has-text-weight-bold" :class="{ green: false }">
                   <font-awesome-icon :icon="['fas', 'thumbs-up']" />
-                  {{ formatCompactNumber(news.likes) }}
+                  {{ formatCompactNumber(1) }}
                 </div>
                 <div class="ml-2 is-clickable has-text-weight-bold">
                   <font-awesome-icon :icon="['fas', 'thumbs-down']" />
-                  {{ formatCompactNumber(news.dislikes) }}
+                  {{ formatCompactNumber(0) }}
                 </div>
               </div>
             </div>
             <div class="level-right">
-              <button class="button btn btn-warning" @click="showNewsInModal(news.id)">Ler</button>
+              <button class="button btn btn-warning" @click="showNewsInModal(news)">Ler</button>
             </div>
           </div>
         </div>
@@ -100,7 +74,7 @@ function showNewsInModal(id: number): void {
         </header>
         <div class="card-content">
           <div class="content">
-            <p>{{ newsMessage }}</p>
+            <p v-html="formatBreakLines(newsMessage)"></p>
             <small class="news-author">Anunciado pelo Governo Mundial em {{ newsDate }}.</small>
           </div>
         </div>

@@ -56,3 +56,8 @@ export function getError(e: unknown): string {
   }
   return responseApi.message;
 }
+
+export const formatBreakLines = (text: string): string => {
+  text = text.replace(/\n/g, '<br>');
+  return text;
+};
