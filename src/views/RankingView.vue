@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import TitleComponent from '@/components/TitleComponent.vue';
+import { ErrorCode } from '@/enums/error-code';
 import type ResultPaginated from '@/interfaces/result-paginated';
 import type { User } from '@/interfaces/user';
 import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatarMini } from '@/utils/avatar-utils';
 import { getBreed } from '@/utils/user-character-utils';
-import { formatNumber } from '@/utils/utils';
+import { formatNumber, showError } from '@/utils/utils';
 import { computed, onMounted, ref } from 'vue';
 
 onMounted(() => {
@@ -62,7 +63,7 @@ async function asyncFilterUsers(): Promise<void> {
     const response = await UserService.filterPaginated({ page: page.value });
     rankingList.value = response;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getAllUsersPaginated, e);
   } finally {
     isLoading.value = false;
   }

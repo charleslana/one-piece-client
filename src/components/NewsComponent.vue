@@ -5,10 +5,11 @@ import TitleComponent from '@/components/TitleComponent.vue';
 import type { Newspaper } from '@/interfaces/newspaper';
 import type { CreateUserNewspaper, UserNewspaper } from '@/interfaces/user-newspaper';
 import NewspaperService from '@/services/newspaper-service';
-import { formatBreakLines, formatCompactNumber, formatFullDate } from '@/utils/utils';
+import { formatBreakLines, formatCompactNumber, formatFullDate, showError } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/user-store';
 import UserNewspaperService from '@/services/user-newspaper-service';
+import { ErrorCode } from '@/enums/error-code';
 
 onMounted(() => {
   asyncGetAllNewspaper();
@@ -34,7 +35,7 @@ async function asyncGetAllNewspaper(): Promise<void> {
     const response = await NewspaperService.getAll();
     newsList.value = response;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getAllNewspaper, e);
   }
 }
 
@@ -74,19 +75,11 @@ async function handleCreateUserNewspaper(
   create: CreateUserNewspaper,
   allUserNewspapers: UserNewspaper[]
 ): Promise<void> {
-  isLoading.value = true;
   if (create.like) {
     await asyncHandleUserLiked(create, allUserNewspapers);
-  } else {
-    await asyncHandleUserDisliked(create, allUserNewspapers);
+    return;
   }
-  try {
-    await asyncGetAllNewspaper();
-  } catch (e) {
-    // console.log(e);
-  } finally {
-    isLoading.value = false;
-  }
+  await asyncHandleUserDisliked(create, allUserNewspapers);
 }
 
 async function asyncHandleUserLiked(
@@ -117,19 +110,27 @@ async function asyncDeleteUserNewspaper(
 ): Promise<void> {
   const userNewspaper = getUserNewspaper(allUserNewspapers, create.newspaperId);
   if (userNewspaper) {
+    isLoading.value = true;
     try {
       await UserNewspaperService.exclude(userNewspaper.id);
+      await asyncGetAllNewspaper();
     } catch (e) {
-      // console.log(e);
+      showError(ErrorCode.excludeUserNewspaper, e);
+    } finally {
+      isLoading.value = false;
     }
   }
 }
 
 async function asyncCreateUserNewspaper(create: CreateUserNewspaper): Promise<void> {
+  isLoading.value = true;
   try {
     await UserNewspaperService.create(create);
+    await asyncGetAllNewspaper();
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.createUserNewspaper, e);
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

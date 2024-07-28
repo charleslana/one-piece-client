@@ -7,9 +7,10 @@ import UserService from '@/services/user-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatar, getAvatarMini } from '@/utils/avatar-utils';
 import { getBreed, getCharacterClass, getFaction, getSea } from '@/utils/user-character-utils';
-import { formatNumber } from '@/utils/utils';
+import { formatNumber, showError } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/user-store';
+import { ErrorCode } from '@/enums/error-code';
 
 interface StatusItem {
   name: string;
@@ -56,7 +57,7 @@ async function asyncGetMe(): Promise<void> {
     userStore.setUserId(user.value.id);
     updateStatusList();
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getMe, e);
   }
 }
 
@@ -93,7 +94,7 @@ async function asyncGetTopByFaction(): Promise<void> {
     marineUsers.value = response.marine;
     revolutionaryUsers.value = response.revolutionary;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getTopByFaction, e);
   }
 }
 
@@ -104,7 +105,7 @@ async function asyncGetTopByCharacterClass(): Promise<void> {
     shooterUsers.value = response.shooter;
     fighterUsers.value = response.fighter;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getTopByCharacterClass, e);
   }
 }
 
@@ -113,7 +114,7 @@ async function asyncGetTopByConsecutiveVictory(): Promise<void> {
     const response = await UserService.getTopByConsecutiveVictory();
     userConsecutiveVictory.value = response;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getTopByConsecutiveVictory, e);
   }
 }
 
@@ -122,7 +123,7 @@ async function asyncGetTopThreeByCoin(): Promise<void> {
     const response = await UserService.getTopThreeByCoin();
     usersCoin.value = response;
   } catch (e) {
-    // console.log(e);
+    showError(ErrorCode.getTopThreeByCoin, e);
   }
 }
 </script>

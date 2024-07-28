@@ -1,5 +1,7 @@
+import { useErrorStore } from '@/stores/error-store';
 import type ResponseApi from '@/interfaces/response-api';
 import type { AxiosError } from 'axios';
+import type { ErrorCode } from '@/enums/error-code';
 
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
@@ -44,20 +46,38 @@ export function formatCompactNumber(number: number): string {
   return formatter.format(number);
 }
 
+export const formatBreakLines = (text: string): string => {
+  text = text.replace(/\n/g, '<br>');
+  return text;
+};
+
 export function getError(e: unknown): string {
   const axiosError = e as AxiosError;
-  const error = axiosError.response?.data;
+  const error = axiosError.response;
   if (!error) {
-    return `Erro desconhecido, entre em contato com o administrador.\n${error}`;
+    return `Erro desconhecido, entre em contato com o administrador.`;
   }
-  const responseApi = error as ResponseApi;
+  const responseApi = error.data as ResponseApi;
   if (Array.isArray(responseApi.message)) {
     return responseApi.message.join(', ');
   }
   return responseApi.message;
 }
 
-export const formatBreakLines = (text: string): string => {
-  text = text.replace(/\n/g, '<br>');
-  return text;
-};
+export function showError(code: ErrorCode, e: unknown): void {
+  let errorMessage;
+  const axiosError = e as AxiosError;
+  const error = axiosError.response;
+  if (error) {
+    const responseApi = error.data as ResponseApi;
+    if (Array.isArray(responseApi.message)) {
+      errorMessage = responseApi.message.join(', ');
+      return;
+    }
+    errorMessage = responseApi.message;
+  } else {
+    errorMessage = axiosError.message;
+  }
+  const errorStore = useErrorStore();
+  errorStore.setErroApi({ code, message: errorMessage });
+}
