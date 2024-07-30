@@ -7,5 +7,8 @@ export enum ErrorCode {
   getAllNewspaper = '000006',
   excludeUserNewspaper = '000007',
   createUserNewspaper = '000008',
-  getAllUsersPaginated = '000009'
+  getAllUsersPaginated = '000009',
+  getUserMessages = '000010',
+  readMessage = '000011',
+  readAllMessage = '000012'
 }

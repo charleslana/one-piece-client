@@ -2,38 +2,20 @@
 import AlertComponent from '@/components/AlertComponent.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
 import NotificationComponent from '@/components/NotificationComponent.vue';
+import { ErrorCode } from '@/enums/error-code';
+import type { User } from '@/interfaces/user';
+import type { UserMessage } from '@/interfaces/user-message';
+import UserMessageService from '@/services/user-message-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
-import { formatFullDate } from '@/utils/utils';
-import { ref } from 'vue';
+import { formatFullDate, showError } from '@/utils/utils';
+import { onMounted, ref } from 'vue';
 
-interface Message {
-  id: number;
-  toName: string;
-  subject: string;
-  description: string;
-  date: string;
-  read: boolean;
-}
+onMounted(() => {
+  asyncGetUserMessages();
+});
 
 const isInbox = ref(true);
-const messages = ref<Message[]>([
-  {
-    id: 1,
-    toName: 'Nome',
-    subject: 'Assunto da mensagem nao detalhada.',
-    description: 'Descrição da mensagem bem detalha com vários textos.',
-    date: '2024-07-20 15:30:01',
-    read: false
-  },
-  {
-    id: 2,
-    toName: 'Nome',
-    subject: 'Assunto da mensagem nao detalhada 2.',
-    description: 'Descrição da mensagem bem detalha com vários textos 2.',
-    date: '2024-07-20 15:30:02',
-    read: true
-  }
-]);
+const messages = ref<UserMessage[]>([]);
 const name = ref('');
 const subject = ref('');
 const description = ref('');
@@ -75,20 +57,14 @@ function clearSendMessage(): void {
   description.value = '';
 }
 
-function reloadMessage(): void {
-  isLoading.value = true;
+async function reloadMessage(): Promise<void> {
   updateMessage.value = 'Atualizando';
-  setTimeout(() => {
-    updateMessage.value = 'Atualizar';
-    isLoading.value = false;
-  }, 1000);
+  await asyncGetUserMessages();
+  updateMessage.value = 'Atualizar';
 }
 
-function readAllMessage(): void {
-  isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 1000);
+async function readAllMessage(): Promise<void> {
+  await asyncReadAllMessage();
 }
 
 function deleteAllMessage(): void {
@@ -115,12 +91,55 @@ function deleteMessage(id: number): void {
   }
 }
 
-function showMessage(message: Message): void {
-  toName.value = message.toName;
-  toSubject.value = message.subject;
-  toDate.value = message.date;
+async function showMessage(message: UserMessage): Promise<void> {
+  await asyncReadMessage(message.id);
+  toName.value = getName(message.sender);
+  toSubject.value = message.title;
+  toDate.value = formatFullDate(new Date(message.createdAt));
   toMessage.value = message.description;
   isModal.value = true;
+}
+
+function getName(user: User | null): string {
+  if (user && user.name) {
+    return user.name;
+  } else {
+    return 'Sistema';
+  }
+}
+
+async function asyncGetUserMessages(): Promise<void> {
+  isLoading.value = true;
+  try {
+    const response = await UserMessageService.getAll();
+    messages.value = response;
+  } catch (e) {
+    showError(ErrorCode.getUserMessages, e);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+async function asyncReadMessage(id: number): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserMessageService.read(id);
+  } catch (e) {
+    showError(ErrorCode.readMessage, e);
+  } finally {
+    await asyncGetUserMessages();
+  }
+}
+
+async function asyncReadAllMessage(): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserMessageService.readAll();
+  } catch (e) {
+    showError(ErrorCode.readAllMessage, e);
+  } finally {
+    await asyncGetUserMessages();
+  }
 }
 </script>
 
@@ -189,13 +208,13 @@ function showMessage(message: Message): void {
               </tfoot>
               <tbody>
                 <tr
-                  :class="{ 'has-text-weight-bold': !message.read }"
+                  :class="{ 'has-text-weight-bold': !message.isRead }"
                   v-for="(message, index) in messages"
                   :key="index"
                 >
-                  <td>{{ message.toName }}</td>
-                  <td>{{ message.subject }}</td>
-                  <td>{{ formatFullDate(new Date(message.date)) }}</td>
+                  <td>{{ getName(message.sender) }}</td>
+                  <td>{{ message.title }}</td>
+                  <td>{{ formatFullDate(new Date(message.createdAt)) }}</td>
                   <td>
                     <div class="buttons">
                       <button
