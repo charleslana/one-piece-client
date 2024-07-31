@@ -8,7 +8,7 @@ import PageTemplate from '@/templates/PageTemplate.vue';
 import { getAvatarMini } from '@/utils/avatar-utils';
 import { getBreed } from '@/utils/user-character-utils';
 import { formatNumber, showError } from '@/utils/utils';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 onMounted(() => {
   asyncFilterUsers();
@@ -25,6 +25,8 @@ const rankingList = ref<ResultPaginated<User>>({
 });
 const page = ref(1);
 const isLoading = ref(false);
+const name = ref<string | undefined>(undefined);
+const isSearch = ref(false);
 
 const getNextButtonAttributes = computed(() => {
   if (!rankingList.value.pagination.hasNextPage || isLoading.value) {
@@ -57,10 +59,18 @@ const displayedPages = computed(() => {
   return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 });
 
+watch(name, async (newValue) => {
+  if (newValue === '' && isSearch.value) {
+    name.value = undefined;
+    await asyncFilterUsers();
+    isSearch.value = false;
+  }
+});
+
 async function asyncFilterUsers(): Promise<void> {
   isLoading.value = true;
   try {
-    const response = await UserService.filterPaginated({ page: page.value });
+    const response = await UserService.filterPaginated({ page: page.value, name: name.value });
     rankingList.value = response;
   } catch (e) {
     showError(ErrorCode.getAllUsersPaginated, e);
@@ -92,6 +102,13 @@ async function gotoPage(pg: number): Promise<void> {
     await asyncFilterUsers();
   }
 }
+
+async function asyncSearch(): Promise<void> {
+  if (name.value !== '') {
+    await asyncFilterUsers();
+    isSearch.value = true;
+  }
+}
 </script>
 
 <template>
@@ -100,6 +117,24 @@ async function gotoPage(pg: number): Promise<void> {
       <div class="level">
         <div class="level-left">
           <TitleComponent title="Ranking!" />
+        </div>
+        <div class="level-right">
+          <div>
+            <div class="field">
+              <div class="control">
+                <input
+                  class="input is-shadowless is-borderless"
+                  type="text"
+                  placeholder="Nome do personagem"
+                  minlength="1"
+                  maxlength="20"
+                  required
+                  v-model.trim="name"
+                />
+              </div>
+            </div>
+          </div>
+          <button class="button btn btn-warning" @click="asyncSearch">Pesquisar</button>
         </div>
       </div>
       <p>
@@ -126,7 +161,12 @@ async function gotoPage(pg: number): Promise<void> {
               <th class="has-text-centered">Avatar</th>
             </tr>
           </tfoot>
-          <tbody>
+          <tbody v-if="rankingList.results.length === 0">
+            <tr class="has-text-centered has-text-weight-bold">
+              <td colspan="5">Nenhum personagem encontrado</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
             <tr
               class="has-text-centered has-text-weight-bold"
               v-for="(ranking, index) in rankingList.results"
