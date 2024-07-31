@@ -10,5 +10,8 @@ export enum ErrorCode {
   getAllUsersPaginated = '000009',
   getUserMessages = '000010',
   readMessage = '000011',
-  readAllMessage = '000012'
+  readAllMessage = '000012',
+  deleteMessage = '000013',
+  deleteAllMessage = '000014',
+  createMessage = '000015'
 }

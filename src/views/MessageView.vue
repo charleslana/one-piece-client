@@ -7,7 +7,7 @@ import type { User } from '@/interfaces/user';
 import type { UserMessage } from '@/interfaces/user-message';
 import UserMessageService from '@/services/user-message-service';
 import PageTemplate from '@/templates/PageTemplate.vue';
-import { formatFullDate, showError } from '@/utils/utils';
+import { formatFullDate, getError, showError } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
 
 onMounted(() => {
@@ -30,25 +30,13 @@ const toSubject = ref('');
 const toDate = ref('');
 const toMessage = ref('');
 
-function sendMessage(): void {
+async function sendMessage(): Promise<void> {
   error.value = '';
   if (!name.value || !subject.value || !description.value) {
     error.value = 'Preencha os campos.';
     return;
   }
-  isLoading.value = true;
-  setTimeout(() => {
-    const e = false;
-    if (e) {
-      error.value = 'Nome de usuário não encontrado.';
-      isLoading.value = false;
-      return;
-    }
-    clearSendMessage();
-    alertMessage.value = 'Sua mensagem foi enviada com sucesso para o remetente.';
-    isAlert.value = true;
-    isLoading.value = false;
-  }, 1000);
+  await asyncCreateMessage();
 }
 
 function clearSendMessage(): void {
@@ -67,27 +55,21 @@ async function readAllMessage(): Promise<void> {
   await asyncReadAllMessage();
 }
 
-function deleteAllMessage(): void {
+async function deleteAllMessage(): Promise<void> {
   const isConfirm = confirm(
     'Você tem certeza que deseja excluir todas mensagens?\nO processo é irreversível!'
   );
   if (isConfirm) {
-    isLoading.value = true;
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 1000);
+    await asyncDeleteAllMessage();
   }
 }
 
-function deleteMessage(id: number): void {
+async function deleteMessage(id: number): Promise<void> {
   const isConfirm = confirm(
-    `Você tem certeza que deseja excluir a mensagem ${id}\nO processo é irreversível!`
+    `Você tem certeza que deseja excluir a mensagem\nO processo é irreversível!`
   );
   if (isConfirm) {
-    isLoading.value = true;
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 1000);
+    await asyncDeleteMessage(id);
   }
 }
 
@@ -140,6 +122,52 @@ async function asyncReadAllMessage(): Promise<void> {
   } finally {
     await asyncGetUserMessages();
   }
+}
+
+async function asyncDeleteMessage(id: number): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserMessageService.delete(id);
+  } catch (e) {
+    showError(ErrorCode.deleteMessage, e);
+  } finally {
+    await asyncGetUserMessages();
+  }
+}
+
+async function asyncDeleteAllMessage(): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserMessageService.deleteAll();
+  } catch (e) {
+    showError(ErrorCode.deleteAllMessage, e);
+  } finally {
+    await asyncGetUserMessages();
+  }
+}
+
+async function asyncCreateMessage(): Promise<void> {
+  isLoading.value = true;
+  try {
+    await UserMessageService.create({
+      name: name.value,
+      title: subject.value,
+      description: description.value
+    });
+    alertMessage.value = `Sua mensagem foi enviada com sucesso para o remetente: ${name.value}.`;
+    isAlert.value = true;
+    clearSendMessage();
+  } catch (e) {
+    error.value = getError(e);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+function reply(): void {
+  isModal.value = false;
+  isInbox.value = false;
+  name.value = toName.value;
 }
 </script>
 
@@ -280,7 +308,7 @@ async function asyncReadAllMessage(): Promise<void> {
                 class="textarea"
                 placeholder=""
                 minlength="1"
-                maxlength="100"
+                maxlength="1000"
                 required
                 v-model.trim="description"
               ></textarea>
@@ -344,6 +372,9 @@ async function asyncReadAllMessage(): Promise<void> {
           <div class="control">
             <textarea class="textarea" placeholder="" disabled v-model.trim="toMessage"></textarea>
           </div>
+        </div>
+        <div class="field">
+          <button class="button btn btn-warning" @click="reply">Responder</button>
         </div>
       </div>
     </template>

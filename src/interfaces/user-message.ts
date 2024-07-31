@@ -8,3 +8,9 @@ export interface UserMessage {
   createdAt: string;
   sender: User | null;
 }
+
+export interface CreateUserMessage {
+  name: string;
+  title: string;
+  description: string;
+}
