@@ -27,6 +27,7 @@ const page = ref(1);
 const isLoading = ref(false);
 const name = ref<string | undefined>(undefined);
 const isSearch = ref(false);
+const isChange = ref(false);
 
 const getNextButtonAttributes = computed(() => {
   if (!rankingList.value.pagination.hasNextPage || isLoading.value) {
@@ -65,6 +66,7 @@ watch(name, async (newValue) => {
     await asyncFilterUsers();
     isSearch.value = false;
   }
+  isChange.value = true;
 });
 
 async function asyncFilterUsers(): Promise<void> {
@@ -104,9 +106,10 @@ async function gotoPage(pg: number): Promise<void> {
 }
 
 async function asyncSearch(): Promise<void> {
-  if (name.value !== '') {
+  if (name.value && isChange.value) {
     await asyncFilterUsers();
     isSearch.value = true;
+    isChange.value = false;
   }
 }
 </script>
@@ -134,7 +137,14 @@ async function asyncSearch(): Promise<void> {
               </div>
             </div>
           </div>
-          <button class="button btn btn-warning" @click="asyncSearch">Pesquisar</button>
+          <button
+            class="button btn btn-warning"
+            :class="{ 'is-loading': isLoading }"
+            :disabled="isLoading"
+            @click="asyncSearch"
+          >
+            Pesquisar
+          </button>
         </div>
       </div>
       <p>
